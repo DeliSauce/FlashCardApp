@@ -1,0 +1,16 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "description": "scripts for flashcards app",
+  "main": "./Google-Sheets/sheets.js",
+  "scripts": {
+    "start": "clear && node sheets.js "
+  },
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/local-auth": "^3.0.1",
+    "googleapis": "^146.0.0"
+  }
+}

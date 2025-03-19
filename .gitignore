@@ -30,7 +30,12 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
+
+# Google secret credentials
+credentials.json
+token.json
 
 # typescript
 *.tsbuildinfo

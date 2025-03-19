@@ -1,0 +1,91 @@
+[
+  ["Question", "Answer", "Link", "Topic", "Orientation", "Status"],
+  [
+    "What is useState and what problem does it solve?",
+    "useState is a Hook that lets you add React state to function components. It returns a stateful value and a function to update it, eliminating the need for converting function components to class components when you need state.\n\n```jsx\nconst [count, setCount] = useState(0);\n```",
+    "",
+    "React",
+    "both",
+    "final"
+  ],
+  [
+    "What is useEffect and when should you use it?",
+    "useEffect lets you perform side effects in function components. It serves the same purpose as componentDidMount, componentDidUpdate, and componentWillUnmount in React classes, but unified into a single API.\n\nUse it for:\n- Data fetching\n- Subscriptions\n- DOM manipulation\n- Logging\n- Any side effects\n\n```jsx\nuseEffect(() => {\n  document.title = `You clicked ${count} times`;\n  \n  return () => {\n    // cleanup code (runs before next effect or unmount)\n  };\n}, [count]); // Only re-run if count changes\n```",
+    "",
+    "React",
+    "both",
+    "final"
+  ],
+  [
+    "What is useContext and what's its advantage?",
+    "useContext accepts a context object (created by React.createContext) and returns the current context value. It lets you consume context in a function component without wrapper components.\n\n```jsx\nconst ThemeContext = React.createContext('light');\nconst theme = useContext(ThemeContext);\n```",
+    "",
+    "React",
+    "both",
+    "final"
+  ],
+  [
+    "What is useReducer and when is it preferable to useState?",
+    "useReducer is an alternative to useState for complex state logic. It accepts a reducer function and initial state, returning the current state and a dispatch function.\n\nPreferable when:\n- Next state depends on previous state\n- State logic is complex\n- State objects contain multiple sub-values\n- Deep updates are required\n\n```jsx\nconst [state, dispatch] = useReducer(reducer, initialState);\n```",
+    "",
+    "React",
+    "both",
+    "final"
+  ],
+  [
+    "What is useCallback and what performance issue does it address?",
+    "useCallback returns a memoized callback that only changes if one of the dependencies changes. It helps prevent unnecessary renders in child components that rely on reference equality of callback props.\n\n```jsx\nconst memoizedCallback = useCallback(\n  () => {\n    doSomething(a, b);\n  },\n  [a, b],\n);\n```",
+    "",
+    "React",
+    "both",
+    "final"
+  ],
+  [
+    "What is useMemo and when should you use it?",
+    "useMemo returns a memoized value that only recalculates when dependencies change. Use it to avoid expensive calculations on every render.\n\n```jsx\nconst memoizedValue = useMemo(\n  () => computeExpensiveValue(a, b),\n  [a, b]\n);\n```",
+    "",
+    "React",
+    "both",
+    "final"
+  ],
+  [
+    "What are the two main use cases for useRef?",
+    "1. Accessing DOM elements directly\n2. Persisting values between renders without causing re-renders\n\n```jsx\n// DOM access\nconst inputRef = useRef(null);\n<input ref={inputRef} />;\ninputRef.current.focus();\n\n// Value persistence\nconst intervalRef = useRef();\nintervalRef.current = setInterval(() => {}, 1000);\n```",
+    "",
+    "React",
+    "both",
+    "final"
+  ],
+  [
+    "How does useLayoutEffect differ from useEffect?",
+    "useLayoutEffect is identical to useEffect in API but fires synchronously after all DOM mutations, before the browser paints. Use it when you need to measure DOM nodes or perform DOM mutations that should be visible immediately.\n\n```jsx\nuseLayoutEffect(() => {\n  // DOM measurements or mutations here\n}, [dependency]);\n```",
+    "",
+    "React",
+    "both",
+    "final"
+  ],
+  [
+    "What is useImperativeHandle and when is it used?",
+    "useImperativeHandle customizes the instance value exposed when using React.forwardRef. It's used when you want to expose only certain methods or properties of a ref to a parent component.\n\n```jsx\nuseImperativeHandle(ref, () => ({\n  focus: () => {\n    inputRef.current.focus();\n  }\n}), [inputRef]);\n```",
+    "",
+    "React",
+    "both",
+    "final"
+  ],
+  [
+    "What are custom Hooks and what naming convention should they follow?",
+    "Custom Hooks are JavaScript functions that use React Hooks and can be reused across components. They should always start with \"use\" (e.g., useFetch, useForm) to indicate they follow the Rules of Hooks.\n\n```jsx\nfunction useWindowSize() {\n  const [size, setSize] = useState({width: 0, height: 0});\n  \n  useEffect(() => {\n    // Logic to update size on window resize\n    \n    return () => {\n      // Cleanup\n    };\n  }, []);\n  \n  return size;\n}\n```",
+    "",
+    "React",
+    "both",
+    "final"
+  ],
+  [
+    "What are the two Rules of Hooks?",
+    "1. Only call Hooks at the top level of your function component or custom Hook (not inside loops, conditions, or nested functions)\n2. Only call Hooks from React function components or custom Hooks (not regular JavaScript functions)",
+    "",
+    "React",
+    "both",
+    "final"
+  ]
+]

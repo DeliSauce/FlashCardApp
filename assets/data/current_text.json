@@ -1,0 +1,227 @@
+[
+  ["QQuestion", "Answer", "Topic", "Orientation", "Status", "Language"],
+  [
+    "Version Control",
+    "Tracking and managing changes to software. One of the benefits of using Git.",
+    "general",
+    "both"
+  ],
+  ["Framework vs Library", "", "general"],
+  ["React: Hooks", "", "", "", "", "React"],
+  [
+    "JS: Promises",
+    "const myPromise = new Promise(function(myResolve, myReject) {\n  setTimeout(function() { myResolve(\"I love You !!\"); }, 3000);\n});\n\nmyPromise.then(function(value) {\n  document.getElementById(\"demo\").innerHTML = value;\n});",
+    "",
+    "",
+    "",
+    "JS"
+  ],
+  [
+    "var, let, const",
+    "var is function-scoped, \nlet/const are block-scoped",
+    "",
+    "QA",
+    "",
+    "JS"
+  ],
+  [
+    "JS: hoisting",
+    "Variable declaration is \"hoisted\" to top of script (assignment is not). During compile phase, just microseconds before your code is executed, it is scanned for function and variable declarations. All these functions and variable declarations are added to the memory inside a JavaScript data structure called Lexical Environment. So that they can be used even before they are actually declared in the source code.\n\nVariables declared with var are hoisted WITH a default initialization (no error if accessing before declaration - returns \"undefined\")\nVariables declared with let or const are hoisted WITHOUT a default initialization. (will throw error if you try accessing variable before declaration)\nOnly function declarations are hoisted in JavaScript, function expressions (assigning a function to a variable) are not hoisted. Thus you can use a declared function before it is actually declared.\n\nJust as let and const declarations, classes in JavaScript are also hoisted, and just as let or const declarations, they remain uninitialized until evaluation. Thus you must declare them first before using\n\n**To avoid possible side effects of hoisting like undefined variables or reference error, always try to declare the variables at the top of their respective scopes and also always try to initialize variables when you declare them.\n\nhttps://blog.bitsrc.io/hoisting-in-modern-javascript-let-const-and-var-b290405adfda",
+    "",
+    "QA"
+  ],
+  ["currying"],
+  [
+    "JS: falsey values",
+    "There are only six falsey values in JavaScript: undefined, null, NaN, 0, \"\" (empty string), and false of course.",
+    "",
+    "QA",
+    "",
+    "JS"
+  ],
+  ["JS: == vs ===", "", "", "QA"],
+  ["event loop"],
+  ["event bubbling"],
+  [
+    "JS: function declaration vs function expression vs arrow function",
+    "Function declarations are added to the memory during the compile stage, so we are able to access it in our code before the actual function declaration.\nhelloWorld();  // prints 'Hello World!' to the console\nfunction helloWorld(){\n  console.log('Hello World!');\n}\n\nFunction expressions\nhelloWorld();  // TypeError: helloWorld is not a function\nvar helloWorld = function(){\n  console.log('Hello World!');\n}\n\nArrow Function\ndo not have their own this\nimplicit return when written on one line\nlet func = (arg) => {return arg + 1}",
+    "",
+    "QA"
+  ],
+  ["WebAssembly (WASM)", "", "frontend"],
+  ["relational database vs non-relational database", "", "backend"],
+  [
+    "ES6",
+    "Second major revision. Released in 2105. Still need to use Babel to compile to ES5\nlet/const, arrow functions, classes, spread operator (...), template literals, destructured assignment\nclass, Promise\nadvanced data structures (Map, Set)\nmodules (allows use import/export in a .js file for variables, functions, classes etc)\nand more!\nhttps://www.w3schools.com/js/js_es6.asp",
+    "",
+    "",
+    "",
+    "JS"
+  ],
+  ["JS: mutability"],
+  [
+    "JS: spread operator",
+    "const q1 = [\"Jan\", \"Feb\", \"Mar\"];\nconst q2 = [\"Apr\", \"May\", \"Jun\"];\nconst q3 = [\"Jul\", \"Aug\", \"Sep\"];\nconst q4 = [\"Oct\", \"Nov\", \"May\"];\nconst year = [...q1, ...q2, ...q3, ...q4];\n\nconst numbers = [23,55,21,87,56];\nlet maxValue = Math.max(...numbers);"
+  ],
+  [
+    "JS: class",
+    "\"syntactical sugar\". class is a template to create JS objects\nclass Car {\n  constructor(name, year) {\n    this.name = name;\n    this.year = year;\n  }\n}\n\nconst myCar1 = new Car(\"Ford\", 2014);"
+  ],
+  ["JS: template literals", "let name = `My name is ${firstName} ${lastName}`"],
+  [
+    "JS: array functions (need to create individual entries)",
+    "https://www.shortcutfoo.com/app/dojos/javascript-arrays/cheatsheet\nhttps://dev.to/devsmitra/28-javascript-array-hacks-a-cheat-sheet-for-developer-5769"
+  ],
+  ["CORS", "Cross Origin Resource Sharing: ", "web"],
+  ["sha1"],
+  ["web", "xframes"],
+  [
+    "React: why do you have to bind functions in class components but not functional components?",
+    "",
+    "",
+    "",
+    "",
+    "React"
+  ],
+  ["JS: call stack work?", "", "", "", "", "JS"],
+  ["", "", "General"],
+  [
+    "why are hooks an improvement? (useState, useEffect, useReducer, useContext, useMemo,etc)",
+    "",
+    "",
+    "",
+    "",
+    "React"
+  ],
+  ["when does is a rerender triggered in React", "", "", "", "", "React"],
+  ["what is the virtual dom in React?", "", "", "", "", "React"],
+  [
+    "template literal",
+    "string like `hello ${foo}` (with backticks)",
+    "",
+    "",
+    "",
+    "JS"
+  ],
+  ["WebAssembly", "", "Frontend"],
+  ["web worker", "", "Frontend"],
+  [
+    "CSR and SSR",
+    "Client Side Rendering vs Server Side Rendering\n- SSR: faster intitial page loads but higher server costs (consider caching pages via CDN), possible hurts SEO (Google may still be able to scan but not sure)",
+    "Web"
+  ],
+  ["SEO", "Search Engine Optimization", "Web"],
+  ["PWA or SPA", "Progressive Web App / Single Page App", "Web"],
+  [
+    "useEffect Hook",
+    "If you’re familiar with React class lifecycle methods, you can think of useEffect Hook as componentDidMount, componentDidUpdate, and componentWillUnmount combined.",
+    "React"
+  ],
+  ["Memoization"],
+  ["Kubernetes"],
+  [
+    "How are Hooks and functional components an improvement over class componenets and react lifecycle methods",
+    "https://medium.com/@dan_abramov/making-sense-of-react-hooks-fdbde8803889",
+    "React"
+  ],
+  [],
+  ["Object.entries(__)", "??"],
+  ["setInterval, clearInterval", "??"],
+  ["addEventLlistener, removeEventListener", "??"],
+  ["TODO: DOM methods for adding elements", "??"],
+  ["lexical scoping", "??", "JS"],
+  ["declaration", "??", "Vocab"],
+  ["TODO: tricky closures", "??", "Solve Code"],
+  ["Unit Test vs Integration Test", "??"],
+  [
+    "TECH STACK & Projects USED AT TENOR",
+    "React (class components) with SSR, gulp, webpack, custom built global state management, \n\nProjects\n- GIF creator (Web Assembly & web workers used to create GIFs)\n- Data Analytics Dashboard for Licensed Media Service (complex queries to ?, work with Engineers to set up client query logging, \n\n..."
+  ],
+  ["mutible vs immutible data types", "??", "", "", "", "JS"],
+  ["Webhooks", "??"],
+  ["tree shaking", "??"],
+  [
+    "function: filter",
+    "array method: remove items?",
+    "method definition",
+    "both",
+    "",
+    "JS"
+  ],
+  [
+    "function: map",
+    "array method: change each item?",
+    "method definition",
+    "both",
+    "",
+    "JS"
+  ],
+  [
+    "function: push",
+    "array method: ADD element at END",
+    "method definition",
+    "both",
+    "final",
+    "JS"
+  ],
+  [
+    "function: pop",
+    "array method: REMOVE element at END",
+    "method definition",
+    "both",
+    "final",
+    "JS"
+  ],
+  [
+    "function: shift",
+    "array method: REMOVE element at FRONT",
+    "method definition",
+    "both",
+    "final",
+    "JS"
+  ],
+  [
+    "function: unshift",
+    "array method: ADD element at FRONT",
+    "method definition",
+    "both",
+    "final",
+    "JS"
+  ],
+  [
+    "CSS: justify content",
+    "flexbox...??",
+    "property definition",
+    "",
+    "",
+    "CSS"
+  ],
+  ["CSS: ", "flexbox...??", "property definition"],
+  ["Object.assign", "??", "method definition", "", "", "JS"],
+  ["React Lifecycle (Hooks)", "??"],
+  ["React Lifecycle (Lifecycle Methods)", "??"],
+  [],
+  ["Terminal: which ___", "??", "", "", "", "terminal"],
+  ["Concept: Sandboxing", "??"],
+  ["Web Security: Cross Site Scripting (XSS)"],
+  ["Web Security: Cross Site Request Forgery (CSRF)"],
+  ["Web Security: Cross Origin Resource Sharing (CORS)"],
+  ["CSS: Grid vs Flexbox vs. ??"],
+  ["Databases: relational vs. non-relational"],
+  ["Terminal: mkdr ____"],
+  [],
+  ["Kubernetes"],
+  ["Docker"],
+  ["Kubernetes vs Docker"],
+  ["parts of a url"],
+  ["toString()", "", "", "", "", "JS"],
+  ["strange math in JS", "decimal point thing"],
+  [],
+  ["source control"],
+  ["ORM", "object relational model: ?"],
+  [
+    "display: none VS visibility: hidden",
+    "https://www.freecodecamp.org/news/css-display-none-and-visibility-hidden-the-difference/",
+    "CSS"
+  ]
+]

@@ -1,0 +1,11 @@
+[
+  ["Question", "Answer", "Link", "Topic", "Orientation", "Status"],
+  [
+    "What is useState and what problem does it solve?",
+    "useState is a Hook that lets you add React state to function components. It returns a stateful value and a function to update it, eliminating the need for converting function components to class components when you need state.\n\n```jsx\nconst [count, setCount] = useState(0);\n```",
+    "",
+    "React",
+    "both",
+    "final"
+  ]
+]

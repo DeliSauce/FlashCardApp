@@ -1,3 +1,23 @@
+when installing use `npx expo install <package>`
+[https://docs.expo.dev/workflow/using-libraries/]
+
+to deploy to localhost:
+- nvm use 20
+- nvm expo start
+- w
+
+
+
+
+to do list
+- install firebase
+    "@google-cloud/local-auth": "^2.1.0",
+    "firebase": "^10.12.5",
+    "googleapis": "^105.0.0",
+
+
+
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
