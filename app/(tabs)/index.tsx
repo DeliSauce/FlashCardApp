@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Platform } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+// import { NavigationContainer } from '@react-navigation/native';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
@@ -15,7 +15,7 @@ import Card from '@/components/Card';
 import rawData from '../../assets/data/current_markdown.json';
 import {DATA} from '@/services/utils.js'
 
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+// import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useEffect, useState } from 'react';
 
 const testData = {
@@ -35,6 +35,7 @@ console.log("data: ", data)
 // console.log(storageService.pushData({test: 'yup'}));
 
 export default function HomeScreen() {
+  console.log('Homescreen Loaded')
   // console.log("DATA: ", rawData, Array.isArray(rawData))
   // const [data, setData] = useState(DATA.format({
   //   data: rawData,
@@ -58,11 +59,9 @@ export default function HomeScreen() {
   
     
   return (
-    <GestureHandlerRootView>
-      {/* <NavigationContainer> */}
-        <HomePage></HomePage>
-      {/* </NavigationContainer> */}
-    </GestureHandlerRootView>
+        <ThemedView>
+          <HomePage></HomePage>
+        </ThemedView>
   );
 }
 

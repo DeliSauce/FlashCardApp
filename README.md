@@ -1,21 +1,28 @@
 when installing use `npx expo install <package>`
 [https://docs.expo.dev/workflow/using-libraries/]
 
-to deploy to localhost:
+### To deploy to localhost:
 - nvm use 20
 - nvm expo start
-- w
+- w (to lauch web on localhost)
 
 
 
 
-to do list
+
+### To do list
+- need to figure out how to hide Google credentials from users and how to deploy them (look into Expo EAS, expo-secure-store)
+- 
+
+
 - install firebase
     "@google-cloud/local-auth": "^2.1.0",
     "firebase": "^10.12.5",
     "googleapis": "^105.0.0",
 
 
+### Uses:
+- expo router for navigation
 
 
 # Welcome to your Expo app 👋

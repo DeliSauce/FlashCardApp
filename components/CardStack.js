@@ -1,48 +1,53 @@
 import react, {useState, useEffect} from 'react';
 import { View, StyleSheet } from 'react-native';
 import Card from '@/components/Card';
+import {useCollectionsStore} from '@/store/collectionsStore'
 
+const CardStack = ({collectionId}) => {
+    console.log({collectionId})
+    // const collections = useCollectionsStore((state) => state.collections)
+    const cards = useCollectionsStore((state) => state.collections.find((collection) => collectionId === collection.id).cards)
+    // console.log('collection: ', collections, collections.find((collection) => collectionId === collection.id))
+    console.log("cards: ", cards)
 
-
-const CardStack = ({dataset}) => {
-    console.log('number of cards instack: ', dataset.length)
+    console.log('Cardstack: cards: ', cards)
+    // console.log('number of cards instack: ', cards.length)
     // const sequence = Array.from({length: data.length}, (x, i) => i);
-
-    // const [dataset, setDataset] = useState(data.slice(1));
     // TODO add random sequence
-    // const sequence = [0,1,2,3,4,5]
-    const [idx, setIdx] = useState(dataset.length - 1);
+    const [idx, setIdx] = useState(cards.length - 1);
 
-    // TODO move into useEffect so that it doesn't get recreated?
+    // TODO move into useCallback so that it doesn't get recreated?
     const setNextCard = () => {
-        console.log(idx)
+        // console.log(idx)
         if (idx - 1 < 0) {
-            setIdx(dataset.length - 1)
+            setIdx(cards.length - 1)
         } else {
             setIdx(idx => idx - 1)
         }
     }
     
-    // console.log("DATA:::::", dataset, sequence)
-    // console.log(dataset.slice(idx, idx+2))
+    // console.log("DATA:::::", cards, sequence)
+    // console.log(cards.slice(idx, idx+2))
 
     useEffect(() => {
-        // TODO update dataset if it changes?
+        // TODO update cards if it changes?
     })
 
     return (
         <View style={styles.cardstack}>
-            {dataset.map((datum, i) => {
+            {cards.map((card, i) => {
                 const hidden = !(idx === i || i === (idx - 1));
-                // console.log('hidden: ', hidden)
+                console.log('cardData: ', card)
+                // console.log('card: ', card)
                 return (
                     <Card
-                        A={datum[0]} 
-                        B={datum[1]} 
-                        topics={datum[2]}
-                        orientation={datum[3]} 
-                        status={datum[4]} 
-                        language={datum[5]} 
+                        cardData={card}
+                        // question={card.question} 
+                        // answer={card.answer} 
+                        // topics={card.topic}
+                        // orientation={card.orientation} 
+                        // status={card.status} 
+                        // language={card.language} 
                         isCurrent={i === idx}
                         setNextCard={setNextCard}
                         key={i}

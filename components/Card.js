@@ -15,10 +15,11 @@ import {
   withSpring,
 } from 'react-native-reanimated';
 
-const Card = ({A, B, topics, orientation, status, language, isCurrent, setNextCard, hidden}) => {
-  console.log({A, B, topics, orientation, status, language, isCurrent, setNextCard, hidden})
+const Card = ({ cardData, isCurrent, setNextCard, hidden }) => {
+  console.log({cardData, isCurrent, setNextCard, hidden})
+  console.log("carddata", cardData)
   // const { data, id } = props;
-  const tags = [topics];
+  const tags = cardData.topics || [];
   // const testtags = ['test1', 'test2', 'test3']
 
   const possibleOrientations = ['A', 'B', 'both'];
@@ -98,16 +99,16 @@ const Card = ({A, B, topics, orientation, status, language, isCurrent, setNextCa
 
   const sideA = (
     <View style={styles.cardInner}>
-      <Text style={styles.info}>{`${A}`}</Text>
+      <Text style={styles.info}>{`${cardData.question}`}</Text>
       {/* <Markdown>{A}</Markdown> */}
-      <Text style={styles.info_small}>{`Orientation: ${orientation}`}</Text>
+      <Text style={styles.info_small}>{`Orientation: ${cardData.orientation}`}</Text>
     </View>
   );
   const sideB = (
     <View style={styles.cardInner}>
-      {/* <Text style={styles.info}>{`${B}`}</Text> */}
-      <Markdown>{B}</Markdown>
-      <Text style={styles.info_small}>{`Orientation: ${orientation}`}</Text>
+      {/* <Text style={styles.info}>{`${cardData.answer}`}</Text> */}
+      <Markdown>{cardData.answer}</Markdown>
+      <Text style={styles.info_small}>{`Orientation: ${cardData.orientation}`}</Text>
     </View>
   );
 
