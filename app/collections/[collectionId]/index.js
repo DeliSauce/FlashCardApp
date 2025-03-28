@@ -4,7 +4,7 @@ import {useCollectionsStore, useCollectionParam} from '@/store/collectionsStore'
 import { useLocalSearchParams } from 'expo-router';
 import CardStack from '@/components/CardStack'
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import CardStackClaude from '@/components/CardStackClaude';
 
 export default function Collection(props) {
     const {collectionId} = useLocalSearchParams();
@@ -14,6 +14,7 @@ export default function Collection(props) {
         <SafeAreaView style={styles.container}>
             <View><Text>{title}</Text></View>
             <CardStack collectionId={collectionId}></CardStack>
+            {/* <CardStackClaude/> */}
         </SafeAreaView>
     )
 }

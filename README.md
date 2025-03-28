@@ -12,6 +12,7 @@ when installing use `npx expo install <package>`
 
 ### To do list
 - need to figure out how to hide Google credentials from users and how to deploy them (look into Expo EAS, expo-secure-store)
+- swipe tracking: track left vs right swipes, record data (should probably be maintained at the 'user' level instead of the 'card'/'collection' level if we want collection sharing in the future), and dynamically set card display order based on optimal frequency (i.e. show known info less often)
 - 
 
 
@@ -21,8 +22,10 @@ when installing use `npx expo install <package>`
     "googleapis": "^105.0.0",
 
 
-### Uses:
+### App Uses:
 - expo router for navigation
+- react-native-reanimated for gesture handling
+- 
 
 
 # Welcome to your Expo app 👋

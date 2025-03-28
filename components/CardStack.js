@@ -1,5 +1,5 @@
-import react, {useState, useEffect} from 'react';
-import { View, StyleSheet } from 'react-native';
+import react, {useState, useEffect, useCallback} from 'react';
+import { View, StyleSheet, Text } from 'react-native';
 import Card from '@/components/Card';
 import {useCollectionsStore} from '@/store/collectionsStore'
 
@@ -14,44 +14,36 @@ const CardStack = ({collectionId}) => {
     // console.log('number of cards instack: ', cards.length)
     // const sequence = Array.from({length: data.length}, (x, i) => i);
     // TODO add random sequence
-    const [idx, setIdx] = useState(cards.length - 1);
+    const [currentIdx, setCurrentIdx] = useState(cards.length - 1);
 
-    // TODO move into useCallback so that it doesn't get recreated?
-    const setNextCard = () => {
-        // console.log(idx)
-        if (idx - 1 < 0) {
-            setIdx(cards.length - 1)
+    // useCallback since this is being passed into child component. Don't want child to rerender whenever parent does. 
+    // (setNextCard would be recreated on rerender and therefore prop would change)
+    const setNextCard = useCallback(() => {
+        // console.log(currentIdx)
+        if (currentIdx - 1 < 0) {
+            setCurrentIdx(cards.length - 1)
         } else {
-            setIdx(idx => idx - 1)
+            setCurrentIdx(currentIdx - 1)
         }
-    }
-    
-    // console.log("DATA:::::", cards, sequence)
-    // console.log(cards.slice(idx, idx+2))
+    }, [currentIdx])
 
-    useEffect(() => {
-        // TODO update cards if it changes?
-    })
+    console.log('Cardstack, current card #', currentIdx)
 
     return (
         <View style={styles.cardstack}>
-            {cards.map((card, i) => {
-                const hidden = !(idx === i || i === (idx - 1));
-                console.log('cardData: ', card)
-                // console.log('card: ', card)
+            {/* <View style={{position: 'absolute', bottom: '100px'}}><Text>THE END</Text></View> */}
+            {cards.map((card, idx) => {
+                const visible = (currentIdx === idx || idx === (currentIdx - 1));
+                // const hidden = !(currentIdx === idx || idx === (currentIdx - 1));
+
                 return (
                     <Card
                         cardData={card}
-                        // question={card.question} 
-                        // answer={card.answer} 
-                        // topics={card.topic}
-                        // orientation={card.orientation} 
-                        // status={card.status} 
-                        // language={card.language} 
-                        isCurrent={i === idx}
+                        isCurrent={idx === currentIdx}
                         setNextCard={setNextCard}
-                        key={i}
-                        hidden={hidden}
+                        idx={idx}
+                        hidden={!visible}
+                        key={idx}
                     >
                     </Card>
                 )
