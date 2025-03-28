@@ -32,6 +32,7 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
     
     const isPressed = useSharedValue(false);
     const isLongPressed = useSharedValue(false);
+    const rotate = useSharedValue('0deg');
     const offset = useSharedValue({ x: 0, y: 0 });
     const defaultStart = useSharedValue({ x: 0, y: 0 });
     const scale = useSharedValue(1);
@@ -46,7 +47,7 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
     const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
     // Define the threshold for swiping off-screen
-    const SWIPE_THRESHOLD = 20;
+    const SWIPE_THRESHOLD = 10;
 
     // Function to reset card position
     const resetCardPosition = useCallback(() => {
@@ -59,39 +60,39 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
 
 
     // Function to handle successful swipe
-    const handleSuccessfulSwipe = useCallback(() => {
-        // Determine which direction to animate off-screen based on current position
-        const direction = translateX.value > 0 ? 1 : -1;
-        const distance = direction * SCREEN_WIDTH;
+    // const handleSuccessfulSwipe = useCallback((cb) => {
+    //     // Determine which direction to animate off-screen based on current position
+    //     const direction = translateX.value > 0 ? 1 : -1;
+    //     const distance = direction * SCREEN_WIDTH;
         
-        // Animate card off screen horizontally using withTiming for precise control
-        onPositionChange(SCREEN_WIDTH);
-        // scale.value = withTiming(3, {
-        //     duration: 1000,
-        //     easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-        // }, (finished) => {
+    //     // Animate card off screen horizontally using withTiming for precise control
+    //     onPositionChange(SCREEN_WIDTH);
+    //     // scale.value = withTiming(3, {
+    //     //     duration: 1000,
+    //     //     easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+    //     // }, (finished) => {
             
-        //     // This callback runs after the first animation completes
-        //     if (finished) {
-        //         console.log('scale finished');
-        //         // runOnJS(setNextCard)();
-        //         // (typeof setNextCard == 'function') && setNextCard();
-        //     }
-        // });
+    //     //     // This callback runs after the first animation completes
+    //     //     if (finished) {
+    //     //         console.log('scale finished');
+    //     //         // runOnJS(setNextCard)();
+    //     //         // (typeof setNextCard == 'function') && setNextCard();
+    //     //     }
+    //     // });
 
-        translateX.value = withTiming(distance, {
-            duration: 100,
-            easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-        }, (finished) => {
-            
-            // This callback runs after the first animation completes
-            if (finished) {
-                console.log('setting next card');
-                setNextCard();
-                // (typeof setNextCard == 'function') && runOnJS(setNextCard)();
-            }
-        });
-    }, [setNextCard, resetCardPosition, translateX, SCREEN_WIDTH]);
+    //     translateX.value = withTiming(distance, {
+    //         duration: 100,
+    //         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+    //     }, (finished) => {
+    //         console.log('setting next card');
+    //         // isCurrent && (typeof setNextCard == 'function') && setNextCard();
+    //         cb();
+    //         // This callback runs after the first animation completes
+    //         if (finished) {
+    //             // (typeof setNextCard == 'function') && runOnJS(setNextCard)();
+    //         }
+    //     });
+    // }, [setNextCard, resetCardPosition, translateX, SCREEN_WIDTH]);
 
     const longPressGesture = Gesture.LongPress().enabled(gesturesEnabled)
         .minDuration(2800)
@@ -126,14 +127,58 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
         .onUpdate((event) => {
             // Update position as user drags
             translateX.value = event.translationX;
+            const DEGREE_OF_ROTATION = 5;
+            if (event.translationX > SWIPE_THRESHOLD) {
+                rotate.value = `${DEGREE_OF_ROTATION}deg`;
+            }
+            if (event.translationX < SWIPE_THRESHOLD) {
+                rotate.value = `-${DEGREE_OF_ROTATION}deg`;
+            }
             // console.log('pan location: ', event.translationX)
-            onPositionChange && runOnJS(onPositionChange)(event.translationX);
+
+            // NOTE commented out the position change code because scaling wasn't working properly
+            // TODO probably should remove rest of that code too.
+            // onPositionChange && runOnJS(onPositionChange)(event.translationX);
             // translateY.value = event.translationY;
         })
         .onEnd((event) => {
             // Check if threshold is met in x direction
             if (Math.abs(event.translationX) > SWIPE_THRESHOLD) {
-                runOnJS(handleSuccessfulSwipe)();
+                // runOnJS(handleSuccessfulSwipe)(setNextCard);
+                const direction = translateX.value > 0 ? 1 : -1;
+                const distance = direction * SCREEN_WIDTH;
+                onPositionChange && runOnJS(onPositionChange)(SCREEN_WIDTH);
+                // scale.value = 1;
+                scale.value = withTiming(1, {
+                    duration: 300,
+                    easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+                }, (finished) => {
+                    
+                    // This callback runs after the first animation completes
+                    if (finished) {
+                        console.log('scale finished');
+                        // runOnJS(setNextCard)();
+                        // (typeof setNextCard == 'function') && setNextCard();
+                    }
+                });
+
+                rotate.value = withTiming('0deg', {duration: 200})
+
+                translateX.value = withTiming(distance, {
+                    duration: 200,
+                    easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+                }, (finished) => {
+                    console.log('setting next card');
+                    runOnJS(setNextCard)();
+                    // isCurrent && (typeof setNextCard == 'function') && setNextCard();
+                    // This callback runs after the first animation completes
+                    if (finished) {
+
+                        // (typeof setNextCard == 'function') && runOnJS(setNextCard)();
+                    }
+                });
+
+                // runOnJS()();
             } else {
                 // If threshold not met, reset position with spring animation
                 translateX.value = withSpring(0);
@@ -174,6 +219,7 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
         return {
         transform: [
             { translateX: translateX.value },
+            { rotate: rotate.value },
             // { scale: scale.value },
             // { translateY: 0 }
         ],
@@ -212,7 +258,7 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
             isFlipped ? styles.sideB : styles.sideA, 
             editMode ? styles.editMode : {},
             isCurrent ? animatedStylesCurrent : animatedStylesNext,
-            
+            isCurrent ? styles.iscurrent : styles.isnext,
             // {zIndex: hiddenWithZIndex ? '-1': '1'},
             // {visibility: hidden ? 'hidden' : ''}
           ]}>
@@ -238,25 +284,27 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
 
 const styles = StyleSheet.create({
     card_layout: {
-      position: 'absolute',
-      bottom: '20px',
-      display: "flex",
-      borderRadius: 10,
+        position: 'absolute',
+        bottom: '20px',
+        display: "flex",
+        borderRadius: 10,
     },
     card: {
-      flexDirection: 'column',
-      width: "80%",
-      height: "90%",
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 5,
-      },
-      shadowOpacity: 0.36,
-      shadowRadius: 6.68,
-  
-      elevation: 11,
-      transform: [{rotateY: '0deg'}],
+        flexDirection: 'column',
+        width: "80%",
+        height: "90%",
+        transform: [{rotateY: '0deg'}], // TODO should try to animate the card flip
+    },
+    isnext: {
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.36,
+        shadowRadius: 6.68,
+        
+        elevation: 11,
     },
     longPressMenu: {
       opacity: '.8',
