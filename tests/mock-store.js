@@ -8,8 +8,8 @@ export const store = {
       cards: [
         {
           id: "card_001",
-          question: "What is the difference between 'let' and 'const' in JavaScript?",
-          answer: "Both 'let' and 'const' are block-scoped variables. The difference is that 'let' allows for reassignment while 'const' creates a variable with a constant reference (not value). Objects assigned with 'const' can still have their properties modified.", 
+          question: "NOT TESTWhat is the difference between 'let' and 'const' in JavaScript?",
+          answer: "Both 'let' and 'const' are block-scoped variables. \n\n\n ``` const thisIsATest ``` \n\n\n The difference is that 'let' allows for reassignment while 'const' creates a variable with a constant reference (not value). Objects assigned with 'const' can still have their properties modified.", 
           link: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const",
           topic: "JS",
           orientation: "both",

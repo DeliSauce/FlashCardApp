@@ -16,17 +16,49 @@ export const useCollectionsStore = create(
     persist(
         (set, get) => ({
             collections: [],
+            loading: false,
+            error: null,
 
             fetchCollections: async () => {
-                set({ isLoading: true, error: null });
+                set({ loading: true, error: null });
                 try {
+                    // throw new Error('need to set up firestore');
                     const collections = store.collections; // TODO replace with API call to Firebase and/or checking localstorage
                     //const collections = await getCollections()
-                    set({ collections, isLoading: false });
+                    set({ collections, loading: false });
                     return collections;
                 } catch (error) {
-                    set({ error: error.message, isLoading: false})
+                    console.log('using asyc storage!!! ', error)
+                    set({ error: error.message, loading: false})
                 }
+            },
+
+            updateCardInCollection: async (collectionId, cardId, data) => {
+                set({ loading: true, error: null })
+                const collections = store.collections;
+                const newCollections = collections.map(( collection ) => {
+                    if (collection.id === collectionId) {
+                        return {
+                            ...collection, 
+                            cards: collection.cards.map(( card ) => {
+                                if (card.id === cardId) {
+                                    return {
+                                        ...card, 
+                                        question: data.question, 
+                                        data: data.answer, 
+                                        updatedAt: new Date().toISOString(),
+                                    }
+                                } else {
+                                    return card;
+                                }
+                            }),
+                            updatedAt: new Date().toISOString(),
+                        }
+                    } else {
+                        return collection;
+                    }
+                });
+                set({ collections: newCollections })
             }
         }),
         {

@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect} from "react";
-import { Text, Image, ImageBackground, View, StyleSheet, Pressable, Dimensions } from "react-native";
+import { Text, TextInput, Image, ImageBackground, View, StyleSheet, Pressable, Dimensions } from "react-native";
 import Markdown from 'react-native-markdown-display';
 
 import Tag from '@/components/Tag';
@@ -17,16 +17,18 @@ import {
   // easeInOut,
   runOnJS,
 } from 'react-native-reanimated';
+import {useCollectionsStore} from '@/store/collectionsStore';
 
 
 
 const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => {}, position }) => {
+    const {updateCardInCollection} = useCollectionsStore();
     const tags = cardData.topics || [];
     const possibleOrientations = ['A', 'B', 'both'];
     const [swipeStatus, setSwipeStatus] = useState('normal');
     const [isFlipped, setIsFlipped] = useState(false);
     const [editMode, setEditMode] = useState(false);
-    const [longPressMode, setLongPressMode] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     // const [hiddenWithZIndex, setHiddenWithZIndex] = useState(false);
     const [gesturesEnabled, setGesturesEnabled] = useState(true);
     
@@ -95,19 +97,19 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
     // }, [setNextCard, resetCardPosition, translateX, SCREEN_WIDTH]);
 
     const longPressGesture = Gesture.LongPress().enabled(gesturesEnabled)
-        .minDuration(2800)
-        .onStart(() => { // called when longpress duration triggered (800ms here)
+        .minDuration(500)
+        .onStart(() => { // called when longpress duration triggered (500ms here)
             console.log('onStart LongPress')
             runOnJS(setGesturesEnabled)(false);
-            runOnJS(setLongPressMode)(true);
-            scale.value = withSpring(1.05);
+            // runOnJS(setLongPressMode)(true);
+            // scale.value = withSpring(1.05);
             // runOnJS(setStatus)('Long pressing...');
             isLongPressed.value = true;
-            runOnJS(setLongPressMode)(!longPressMode);
+            runOnJS(setIsModalOpen)(!isModalOpen);
         })
         .onEnd(() => {
             console.log('onEnd LongPress')
-            scale.value = withSpring(1);
+            // scale.value = withSpring(1);
         })
         .runOnJS(true);
 
@@ -195,22 +197,65 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
     );
     const sideB = (
         <View style={styles.cardInner}>
-            {/* <Text style={styles.info}>{`${cardData.answer}`}</Text> */}
             <Markdown>{cardData.answer}</Markdown>
-            <Text style={styles.info_small}>{`Orientation: ${cardData.orientation}`}</Text>
+        </View>
+    );
+
+    const [questionText, onChangeQuestionText] = useState(cardData.question);
+    const [answerText, onChangeAnswerText] = useState(cardData.answer);
+
+    const saveChangesToCard = () => {
+        // TODO need to replace the first argument with a variable!!!
+        updateCardInCollection('coll_001', cardData.id, {question: questionText, answer: answerText});
+        setEditMode(false);
+        setGesturesEnabled(true);
+    }
+
+    const editView = (
+        <View style={{height: '100%'}}>
+            <TextInput editable multiline style={styles.text_input} 
+                value={`${questionText}`}
+                onChangeText={onChangeQuestionText}
+            />
+            <TextInput editable multiline style={styles.text_input}
+                value={`${answerText}`}
+                onChangeText={onChangeAnswerText}
+            />
+            <View style={styles.edit_buttons_row}>
+                <Pressable onPress={saveChangesToCard}>
+                    <Image resizeMode={'contain'} style={{height: '50px'}}
+                    source={require('@/assets/images/save-icon.png')}/>
+                </Pressable>
+            </View>
         </View>
     );
 
     const longPressMenu = (
         <View style={[styles.card_layout, styles.longPressMenu]}>
-            <View style={styles.menu_section}>
-                <Image style={styles.menu_img} source={require('@/assets/images/edit-icon.svg')}></Image>
+            <Pressable 
+                onPress={() => {
+                    setEditMode(true); 
+                    setIsModalOpen(false)
+                }} 
+                style={styles.menu_section}
+            >
+                <Image style={styles.menu_img} source={require('../assets/images/edit-icon.svg')}></Image>
                 <Text style={styles.menu_text}>EDIT</Text>
-            </View>
-            <View style={styles.menu_section}>
-                <Image style={styles.menu_img} source={require('@/assets/images/delete-icon.svg')}></Image>
+            </Pressable>
+            <Pressable onPress={() => console.log('TODO DELETE')} style={styles.menu_section}>
+                <Image style={styles.menu_img} source={require('../assets/images/delete-icon.svg')}></Image>
                 <Text style={styles.menu_text}>DELETE</Text>
-            </View>
+            </Pressable>
+            <Pressable 
+                onPress={() => {
+                    setIsModalOpen(false);
+                    setGesturesEnabled(true);
+                }} 
+                style={styles.menu_section}
+            >
+                <Image style={styles.menu_img} source={require('@/assets/images/x-icon.svg')}></Image>
+                <Text style={styles.menu_text}>{'CLOSE'}</Text>
+            </Pressable>
         </View>
     );
   
@@ -256,25 +301,28 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
             styles.card_layout, 
             styles.card, 
             isFlipped ? styles.sideB : styles.sideA, 
-            editMode ? styles.editMode : {},
+            editMode ? styles.edit_mode_view : {},
             isCurrent ? animatedStylesCurrent : animatedStylesNext,
             isCurrent ? styles.iscurrent : styles.isnext,
             // {zIndex: hiddenWithZIndex ? '-1': '1'},
             // {visibility: hidden ? 'hidden' : ''}
           ]}>
-            <View>
-              <View style={styles.tagsrow}>
-                {tags.map((tag, index) => <Tag title={tag} key={index}/>)}
-              </View>
-              <View>
-                <Text>{`Card #${cardData.id}`}</Text>
-              </View>
+            { !editMode && 
+                <View>
+                    <View style={styles.tagsrow}>
+                        {tags.map((tag, index) => <Tag title={tag} key={index}/>)}
+                    </View>
+                    <View>
+                        <Text>{`Card #${cardData.id}`}</Text>
+                    </View>
+            
+                    {isFlipped ? sideB : sideA}
+                </View>
+            }
+
+            { editMode && editView }
     
-              {isFlipped ? sideB : sideA}
-              
-            </View>
-    
-            {longPressMode && longPressMenu}
+            { isModalOpen && longPressMenu }
             
           </Animated.View>
         </GestureDetector>
@@ -307,7 +355,7 @@ const styles = StyleSheet.create({
         elevation: 11,
     },
     longPressMenu: {
-      opacity: '.8',
+      opacity: 0.8,
       backgroundColor: 'grey',
       width: "100%",
       height: "100%",
@@ -327,7 +375,7 @@ const styles = StyleSheet.create({
     },
     menu_text: {
       color: 'white',
-      fontSize: '16px',
+      fontSize: 20,
     },
     sideA: {
       backgroundColor: "lightblue",
@@ -336,8 +384,26 @@ const styles = StyleSheet.create({
       backgroundColor: "lightgrey",
       transform: [{rotateY: '45deg'}],
     },
-    editMode: {
-      // backgroundColor: 'red',
+    edit_mode_view: {
+      backgroundColor: 'red',
+      padding: '0',
+    },
+    edit_buttons_row: {
+        display: 'flex',
+        justifyContent: 'center',
+        height: '50px',
+        width: '100%',
+        backgroundColor: 'orange',
+        position: 'absolute',
+        top: '-50px',
+    },
+    edit_buttons_save_icon: {
+        height: '50px',
+        aspectRatio: '1',
+        // width: '50px',
+        // backgroundColor: 'orange',
+        // position: 'absolute',
+        // top: '-50px',
     },
     image: {
       width: "100%",
@@ -370,6 +436,13 @@ const styles = StyleSheet.create({
       fontSize: 10,
       color: "white",
       fontWeight: "bold",
+    },
+    text_input: {
+        flex: 1,
+        height: 40,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
     },
     button: {
       width: 70,
