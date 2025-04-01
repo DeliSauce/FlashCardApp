@@ -82,6 +82,7 @@ export default function NewCollectionScreen() {
       setIsLoading(true);
       const data = await gemini.query({prompt: geminiQuery, type: 'collection', numCards: numGeminiCards});
       setIsLoading(false);
+      setCollectionTitle(geminiQuery);
       setCards(data.map( card => ({...blankCard, ...card})));
       console.log('data: ', data)
     }
