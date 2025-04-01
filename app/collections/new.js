@@ -24,7 +24,7 @@ export default function NewCollectionScreen() {
     const { addCollection } = useCollectionsStore();
     const [geminiQuery, setGeminiQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [numGeminiCards, setNumGeminiCards] = useState(3);
+    const [numGeminiCards, setNumGeminiCards] = useState('undefined');
 
     const [collectionTitle, setCollectionTitle] = useState('');
     const blankCard = { question: '', answer: '', link: '', topic: '', orientation: 'both' }
@@ -75,7 +75,7 @@ export default function NewCollectionScreen() {
 
       // Here you would typically send the data to your API
       Alert.alert('Success', 'Collection created successfully!');
-      router.back();
+      router.push('/collections');
     };
 
     const handleAIQuerySubmit = async () => {
@@ -102,9 +102,13 @@ export default function NewCollectionScreen() {
             onValueChange={(value) => setNumGeminiCards(value)}
             style={styles.picker}
           >
-            {[...Array(100).keys()].map((_, idx) => (
-              <Picker.Item label={(idx + 1).toString()} value={idx + 1} key={idx} />
-            ))}
+            {
+              [...Array(100+1).keys()]
+                .map((_, idx) => (idx ? idx.toString() : 'undefined'))
+                .map( value => (
+                  <Picker.Item label={value} value={value} key={value} />
+                ))
+            }
           </Picker>
 
           {isLoading ? 

@@ -13,6 +13,8 @@ when installing use `npx expo install <package>`
 ### To do list
 - need to figure out how to hide Google credentials from users and how to deploy them (look into Expo EAS, expo-secure-store)
 - swipe tracking: track left vs right swipes, record data (should probably be maintained at the 'user' level instead of the 'card'/'collection' level if we want collection sharing in the future), and dynamically set card display order based on optimal frequency (i.e. show known info less often)
+- figure out best RN component for buttons (pressable, touchableopacity, button, etc)
+- make sure that UI is reachable at bottom of screen
 - 
 
 
@@ -22,10 +24,19 @@ when installing use `npx expo install <package>`
     "googleapis": "^105.0.0",
 
 
+
+
 ### App Uses:
 - expo router for navigation
 - react-native-reanimated for gesture handling
 - 
+
+
+### Resources for Animations
+- https://docs.swmansion.com/react-native-reanimated/docs/utilities/interpolate/
+- https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/rotateY
+- https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/perspective
+
 
 
 # Welcome to your Expo app 👋

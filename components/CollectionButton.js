@@ -17,6 +17,7 @@ function CollectionButton(props) {
     }
 
     function handleLongPress() {
+        console.log('long press')
         setIsModalOpen(true);
     }
 
@@ -41,7 +42,6 @@ function CollectionButton(props) {
             <Pressable 
                 onPress={() => {
                     setIsModalOpen(false);
-                    setGesturesEnabled(true);
                 }} 
                 style={styles.menu_section}
             >
