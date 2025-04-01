@@ -21,13 +21,15 @@ function CollectionButton(props) {
         setIsModalOpen(true);
     }
 
+    function handleEditButtonPress() {
+        setIsModalOpen(false);
+        router.push(`/collections/${props.collection.id}/edit`);
+    }
+
     const LongPressMenu = (
         <View style={[styles.container, styles.longPressMenu]}>
             <Pressable 
-                onPress={() => {
-                    setEditMode(true); 
-                    setIsModalOpen(false)
-                }} 
+                onPress={handleEditButtonPress} 
                 style={styles.menu_section}
             >
                 <Image style={styles.menu_image} source={require('../assets/images/edit-icon.svg')}></Image>
