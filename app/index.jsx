@@ -1,4 +1,5 @@
-import { Text, View, StyleSheet, Pressable, Image } from 'react-native';
+import { Text, View, StyleSheet, Pressable } from 'react-native';
+import { Image } from 'expo-image';
 import { Link, useRouter } from 'expo-router'; 
 // import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -8,10 +9,7 @@ export default function Index() {
   return (
         <View style={styles.container}>
           <Text style={styles.text}>Home screen</Text>
-          <View style={{flex: 1}}>
-              <Image style={styles.button_image} resizeMode='contain' source={require('@/assets/images/edit-icon.svg')}/>
-          </View>
-
+          
           <Pressable style={styles.collections_button} onPress={() => router.push('/collections')}>
             <Text style={styles.link_text}>Go To Collections</Text>
           </Pressable>

@@ -4,6 +4,8 @@ import { useRouter } from 'expo-router';
 
 function CollectionButton(props) {
     const router = useRouter();
+
+    console.log('collection item: ', props)
     
     function handlePress() {
         router.push('/collections/' + props.collection.id)
@@ -26,11 +28,13 @@ const styles = StyleSheet.create({
         // alignItems: 'center',
         // alignContent: 'center',
         // textAlign: 'center',
-        aspectRatio: '1 / 1',
+        // aspectRatio: '1 / 1',
         borderRadius: '5px',
         backgroundColor: 'lightblue',
         boxShadow: '1',
         padding: '10px',
+        width: 150,
+        height: 150,
     },
     buttonStyling: {
         boxShadow: 

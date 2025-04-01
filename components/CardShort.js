@@ -1,5 +1,6 @@
 import React, {useState, useCallback, useEffect} from "react";
-import { Text, TextInput, Image, ImageBackground, View, StyleSheet, Pressable, Dimensions } from "react-native";
+import { Text, TextInput, ImageBackground, View, StyleSheet, Pressable, Dimensions } from "react-native";
+import { Image } from 'expo-image';
 import Markdown from 'react-native-markdown-display';
 
 import Tag from '@/components/Tag';
@@ -223,7 +224,7 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
             />
             <View style={styles.edit_buttons_row}>
                 <Pressable onPress={saveChangesToCard}>
-                    <Image resizeMode={'contain'} style={{height: '50px'}}
+                    <Image contentFit='contain' style={{height: 50}}
                     source={require('@/assets/images/save-icon.png')}/>
                 </Pressable>
             </View>
@@ -239,11 +240,11 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
                 }} 
                 style={styles.menu_section}
             >
-                <Image style={styles.menu_img} source={require('../assets/images/edit-icon.svg')}></Image>
+                <Image style={styles.menu_image} source={require('../assets/images/edit-icon.svg')}></Image>
                 <Text style={styles.menu_text}>EDIT</Text>
             </Pressable>
             <Pressable onPress={() => console.log('TODO DELETE')} style={styles.menu_section}>
-                <Image style={styles.menu_img} source={require('../assets/images/delete-icon.svg')}></Image>
+                <Image style={styles.menu_image} source={require('../assets/images/delete-icon.svg')}></Image>
                 <Text style={styles.menu_text}>DELETE</Text>
             </Pressable>
             <Pressable 
@@ -253,7 +254,7 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
                 }} 
                 style={styles.menu_section}
             >
-                <Image style={styles.menu_img} source={require('@/assets/images/x-icon.svg')}></Image>
+                <Image style={styles.menu_image} source={require('../assets/images/x-icon.svg')}></Image>
                 <Text style={styles.menu_text}>{'CLOSE'}</Text>
             </Pressable>
         </View>
@@ -369,9 +370,9 @@ const styles = StyleSheet.create({
       display: 'flex',
       flexDirection: 'column'
     },
-    menu_img: {
-      width: '40px',
-      height: '40px',
+    menu_image: {
+      width: 50,
+      height: 50,
     },
     menu_text: {
       color: 'white',

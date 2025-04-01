@@ -6,8 +6,8 @@ when installing use `npx expo install <package>`
 - nvm expo start
 - w (to lauch web on localhost)
 
-
-
+##### other useful CLI commands
+- npx expo-doctor
 
 
 ### To do list
