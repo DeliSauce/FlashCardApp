@@ -377,7 +377,12 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
                         </View>
 
                         <View style={styles.cardInner}>
-                            <Markdown>{cardData.answer}</Markdown>
+                            <Markdown style={{
+                                body: {color: 'black', fontSize: 10},
+                                heading1: {color: 'purple'},
+                                code_block: {color: 'blue', fontSize: 10},
+                                code_inline: {color: 'green', fontSize: 10, padding: 2}
+                            }}>{cardData.answer}</Markdown>
                         </View>
                     </Animated.View>
                 </View>
