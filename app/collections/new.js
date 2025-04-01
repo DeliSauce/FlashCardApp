@@ -101,8 +101,8 @@ export default function NewCollectionScreen() {
             onValueChange={(value) => setNumGeminiCards(value)}
             style={styles.picker}
           >
-            {[1,2,3,4,5].map((number) => (
-              <Picker.Item label={number.toString()} value={number} key={number} />
+            {[...Array(100).keys()].map((_, idx) => (
+              <Picker.Item label={(idx + 1).toString()} value={idx + 1} key={idx} />
             ))}
           </Picker>
 

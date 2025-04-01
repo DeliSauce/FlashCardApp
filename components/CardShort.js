@@ -15,8 +15,8 @@ import {
   withSpring,
   withTiming,
   Easing,
-  // easeInOut,
   runOnJS,
+  interpolate,
 } from 'react-native-reanimated';
 import {useCollectionsStore} from '@/store/collectionsStore';
 
@@ -36,9 +36,10 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
     const isPressed = useSharedValue(false);
     const isLongPressed = useSharedValue(false);
     const rotate = useSharedValue('0deg');
+    const flipRotation = useSharedValue(0);
     const offset = useSharedValue({ x: 0, y: 0 });
     const defaultStart = useSharedValue({ x: 0, y: 0 });
-    const scale = useSharedValue(1);
+    const scale = useSharedValue(0);
     // const start = useSharedValue({ x: 0, y: 0 });
     const startX = 0;
     const startY = 0;
@@ -50,7 +51,8 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
     const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
     // Define the threshold for swiping off-screen
-    const SWIPE_THRESHOLD = 10;
+    const SWIPE_THRESHOLD_START = 10;
+    const SWIPE_THRESHOLD_FINISH = 80;
 
     // Function to reset card position
     const resetCardPosition = useCallback(() => {
@@ -119,6 +121,7 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
             isPressed.value = true;
         })
         .onEnd(() => {
+            flipRotation.value = withTiming(isFlipped ? 0 : 1, { duration: 500 });
             isPressed.value = false;
             setIsFlipped(!isFlipped);
         })
@@ -131,22 +134,25 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
             // Update position as user drags
             translateX.value = event.translationX;
             const DEGREE_OF_ROTATION = 5;
-            if (event.translationX > SWIPE_THRESHOLD) {
-                rotate.value = `${DEGREE_OF_ROTATION}deg`;
+
+            if (Math.abs(event.translationX) > SWIPE_THRESHOLD_START) {
+                const direction = event.translationX > SWIPE_THRESHOLD_START ? 1 : -1;
+                rotate.value = withTiming(`${direction * DEGREE_OF_ROTATION}deg`, {
+                    duration: 100,
+                    easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+                })
             }
-            if (event.translationX < SWIPE_THRESHOLD) {
-                rotate.value = `-${DEGREE_OF_ROTATION}deg`;
-            }
+            
             // console.log('pan location: ', event.translationX)
 
             // NOTE commented out the position change code because scaling wasn't working properly
             // TODO probably should remove rest of that code too.
-            // onPositionChange && runOnJS(onPositionChange)(event.translationX);
+            onPositionChange && runOnJS(onPositionChange)(event.translationX);
             // translateY.value = event.translationY;
         })
         .onEnd((event) => {
             // Check if threshold is met in x direction
-            if (Math.abs(event.translationX) > SWIPE_THRESHOLD) {
+            if (Math.abs(event.translationX) > SWIPE_THRESHOLD_FINISH) {
                 // runOnJS(handleSuccessfulSwipe)(setNextCard);
                 const direction = translateX.value > 0 ? 1 : -1;
                 const distance = direction * SCREEN_WIDTH;
@@ -165,7 +171,10 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
                     }
                 });
 
-                rotate.value = withTiming('0deg', {duration: 200})
+                // rotate.value = withTiming('0deg', {
+                //     duration: 100,
+                //     easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+                // })
 
                 translateX.value = withTiming(distance, {
                     duration: 200,
@@ -185,22 +194,11 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
             } else {
                 // If threshold not met, reset position with spring animation
                 translateX.value = withSpring(0);
+                rotate.value =withSpring('0deg');
                 // translateY.value = withSpring(0);
             }
         });
 
-
-    const sideA = (
-        <View style={styles.cardInner}>
-            <Text style={styles.info}>{`${cardData.question}`}</Text>
-            <Text style={styles.info_small}>{`Orientation: ${cardData.orientation}`}</Text>
-        </View>
-    );
-    const sideB = (
-        <View style={styles.cardInner}>
-            <Markdown>{cardData.answer}</Markdown>
-        </View>
-    );
 
     const [questionText, onChangeQuestionText] = useState(cardData.question);
     const [answerText, onChangeAnswerText] = useState(cardData.answer);
@@ -266,8 +264,6 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
         transform: [
             { translateX: translateX.value },
             { rotate: rotate.value },
-            // { scale: scale.value },
-            // { translateY: 0 }
         ],
         };
     });
@@ -275,9 +271,7 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
     const animatedStylesNext = useAnimatedStyle(() => {
         return {
         transform: [
-            // { translateX: translateX.value },
             { scale: scale.value },
-            // { translateY: 0 }
         ],
         };
     });
@@ -285,39 +279,107 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
     if (!isCurrent) {
         // console.log('next card data', position)
     }
+    
+    const animatedStylesFront = useAnimatedStyle(() => {
+        // Calculate rotation by combining flip and pan rotations
+        const rotateYValue = interpolate(
+            flipRotation.value,
+            [0, 1],
+            [0, 180]
+        );
+        
+        return {
+            transform: [
+                { perspective: 800 },
+                { rotateY: `${rotateYValue}deg` },
+            ],
+            // Only show front when not flipped
+            opacity: interpolate(
+                flipRotation.value,
+                [0, 0.5, 0.5, 1],
+                [1, 1, 0, 0]
+            ),
+        };
+    });
+    
+    const animatedStylesBack = useAnimatedStyle(() => {
+        // Calculate rotation by combining flip and pan rotations
+        // Add 180 degrees to keep the back facing correctly
+        const rotateYValue = interpolate(
+          flipRotation.value,
+          [0, 1],
+          [180, 360]
+        );
+        
+        return {
+          transform: [
+            { perspective: 800 },
+            { rotateY: `${rotateYValue}deg` },
+          ],
+          // Only show back when flipped
+          opacity: interpolate(
+            flipRotation.value,
+            [0, 0.5, 0.5, 1],
+            [0, 0, 1, 1]
+          ),
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        };
+      });
 
     useEffect(() => {
         let distance = position ? Math.abs(position) : 0;
-        const halfScreen = SCREEN_WIDTH / 2
-        distance = distance > halfScreen ? halfScreen : distance;
-        // const scale = distance / SCREEN_WIDTH;
-        // console.log('scale: ', scale);
-        scale.value = distance / halfScreen < 1 ? distance / halfScreen : 1;
-        console.log('position change, new scale: ', scale.value)
+        if (distance < SWIPE_THRESHOLD_START) {
+            scale.value = 0;
+        } else if (distance <= SWIPE_THRESHOLD_FINISH) {
+            scale.value = (distance - SWIPE_THRESHOLD_START) / (SWIPE_THRESHOLD_FINISH - SWIPE_THRESHOLD_START);
+        } else {
+            scale.value = 1;
+        }
     }, [position])
 
     return (
         <GestureDetector gesture={Gesture.Race( longPressGesture, panGesture, tapGesture)}>  
           <Animated.View style={[
             styles.card_layout, 
-            styles.card, 
-            isFlipped ? styles.sideB : styles.sideA, 
             editMode ? styles.edit_mode_view : {},
-            isCurrent ? animatedStylesCurrent : animatedStylesNext,
-            isCurrent ? styles.iscurrent : styles.isnext,
-            // {zIndex: hiddenWithZIndex ? '-1': '1'},
-            // {visibility: hidden ? 'hidden' : ''}
+            isCurrent ? animatedStylesCurrent : animatedStylesNext
           ]}>
+
+              {/* <View style={styles.tagsrow}>
+                  {tags.map((tag, index) => <Tag title={tag} key={index}/>)}
+              </View> */}
             { !editMode && 
-                <View>
-                    <View style={styles.tagsrow}>
-                        {tags.map((tag, index) => <Tag title={tag} key={index}/>)}
-                    </View>
-                    <View>
-                        <Text>{`Card #${cardData.id}`}</Text>
-                    </View>
-            
-                    {isFlipped ? sideB : sideA}
+                <View style={styles.cardWrapper}>
+                    {/* Front of Card */}
+                    <Animated.View style={[
+                        styles.card, animatedStylesFront, styles.cardFront,isCurrent ? styles.iscurrent : styles.isnext,
+                        ]}>
+                
+                        <View>
+                            <Text style={styles.info}>{`${cardData.question}`}</Text>
+                        </View>
+
+                        <View>
+                            <Text>{`Card #${cardData.id} FRONT`}</Text>
+                        </View>
+                    </Animated.View>
+
+                    {/* Back of Card */}
+                    <Animated.View style={[
+                        styles.card, animatedStylesBack, styles.cardBack, isCurrent ? styles.iscurrent : styles.isnext,
+                        ]}>
+                        <View>
+                            <Text>{`Card #${cardData.id} BACK`}</Text>
+                        </View>
+
+                        <View style={styles.cardInner}>
+                            <Markdown>{cardData.answer}</Markdown>
+                        </View>
+                    </Animated.View>
                 </View>
             }
 
@@ -336,24 +398,39 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: '20px',
         display: "flex",
-        borderRadius: 10,
-    },
-    card: {
-        flexDirection: 'column',
         width: "80%",
         height: "90%",
-        transform: [{rotateY: '0deg'}], // TODO should try to animate the card flip
+    },
+    cardWrapper: {
+        width: "100%",
+        height: "100%",
+        
+    },
+    card: {
+        width: "100%",
+        height: "100%",
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        borderRadius: 10,
+        padding: 20,
+        // transform: [{rotateY: '0deg'}], // TODO should try to animate the card flip
+    },
+    cardFront: {
+      backgroundColor: "lightblue",
+    },
+    cardBack: {
+      backgroundColor: "lightgrey",
+    //   transform: [{rotateY: '45deg'}],
     },
     isnext: {
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 5,
-        },
-        shadowOpacity: 0.36,
-        shadowRadius: 6.68,
-        
-        elevation: 11,
+        // shadowColor: "#000",
+        // shadowOffset: {
+        //     width: 0,
+        //     height: 5,
+        // },
+        // shadowOpacity: 0.36,
+        // shadowRadius: 6.68,
+        // elevation: 11,
     },
     longPressMenu: {
       opacity: 0.8,
@@ -377,13 +454,6 @@ const styles = StyleSheet.create({
     menu_text: {
       color: 'white',
       fontSize: 20,
-    },
-    sideA: {
-      backgroundColor: "lightblue",
-    },
-    sideB: {
-      backgroundColor: "lightgrey",
-      transform: [{rotateY: '45deg'}],
     },
     edit_mode_view: {
       backgroundColor: 'red',
