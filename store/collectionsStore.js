@@ -46,6 +46,12 @@ export const useCollectionsStore = create(
                 set({collections: updatedCollections, loading: false, error: null})
             },
 
+            deleteCollection: async (collectionId) => {
+                set({ loading: true, error: null })
+                const updatedCollections = get().collections.filter( (collection) => collection.id !== collectionId)
+                set({ collections: updatedCollections, loading: false, error: null })
+            },
+
             updateCardInCollection: async (collectionId, cardId, data) => {
                 set({ loading: true, error: null })
                 const collections = store.collections;

@@ -1,8 +1,13 @@
-import React, {useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import {View, StyleSheet, Text, TouchableOpacity, Pressable} from 'react-native';
+import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
+import { useCollectionsStore } from '@/store/collectionsStore';
 
 function CollectionButton(props) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { deleteCollection } = useCollectionsStore();
+
     const router = useRouter();
 
     console.log('collection item: ', props)
@@ -11,11 +16,49 @@ function CollectionButton(props) {
         router.push('/collections/' + props.collection.id)
     }
 
+    function handleLongPress() {
+        setIsModalOpen(true);
+    }
+
+    const LongPressMenu = (
+        <View style={[styles.container, styles.longPressMenu]}>
+            <Pressable 
+                onPress={() => {
+                    setEditMode(true); 
+                    setIsModalOpen(false)
+                }} 
+                style={styles.menu_section}
+            >
+                <Image style={styles.menu_image} source={require('../assets/images/edit-icon.svg')}></Image>
+                <Text style={styles.menu_text}>EDIT</Text>
+            </Pressable>
+
+            <Pressable onPress={() => deleteCollection(props.collection.id) } style={styles.menu_section}>
+                <Image style={styles.menu_image} source={require('../assets/images/delete-icon.svg')}></Image>
+                <Text style={styles.menu_text}>DELETE</Text>
+            </Pressable>
+
+            <Pressable 
+                onPress={() => {
+                    setIsModalOpen(false);
+                    setGesturesEnabled(true);
+                }} 
+                style={styles.menu_section}
+            >
+                <Image style={styles.menu_image} source={require('../assets/images/x-icon.svg')}></Image>
+                <Text style={styles.menu_text}>{'CLOSE'}</Text>
+            </Pressable>
+        </View>
+    )
+
     return (
         <Pressable 
             style={[styles.container, styles.buttonStyling]} 
-            onPress={handlePress}>
+            onPress={handlePress}
+            onLongPress={handleLongPress}
+            >
             <Text style={styles.text}>{props.collection.title}</Text>
+            { isModalOpen && LongPressMenu } 
         </Pressable>
     )
 }
@@ -25,10 +68,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        // alignItems: 'center',
-        // alignContent: 'center',
-        // textAlign: 'center',
-        // aspectRatio: '1 / 1',
         borderRadius: '5px',
         backgroundColor: 'lightblue',
         boxShadow: '1',
@@ -49,6 +88,34 @@ const styles = StyleSheet.create({
     text: {
         textAlign: 'center',
     },
+    longPressMenu: {
+        position: 'absolute',
+        // zIndex: 10,
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        opacity: 0.8,
+        backgroundColor: 'grey',
+        width: "100%",
+        height: "100%",
+        bottom: 0,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        paddingTop: '100px',
+      },
+      menu_section: {
+        display: 'flex',
+        flexDirection: 'column'
+      },
+      menu_image: {
+        width: 20,
+        height: 20,
+      },
+      menu_text: {
+        color: 'white',
+        fontSize: 10,
+      },
     keyboardAvoidContainer: {
         flex: 1,
     },
