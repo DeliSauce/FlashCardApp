@@ -4,8 +4,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useCollectionsStore, getCollectionFromId } from '@/store/collectionsStore';
 
 export default function EditCollectionScreen() {
-
-    const { collectionId } = useLocalSearchParams();
+    const { collectionId, error } = useLocalSearchParams();
     const { updateCollection } = useCollectionsStore();
     const collection = getCollectionFromId(collectionId);
 
@@ -18,7 +17,8 @@ export default function EditCollectionScreen() {
     return (
         <CollectionForm
             onSubmit={handleUpdatedCollection}
-            collectionData={collection} 
+            collectionData={collection}
+            message={error}
         />
     )
 }

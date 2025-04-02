@@ -26,6 +26,10 @@ export default function CollectionForm( props ) {
     const [ isLoading, setIsLoading ] = useState(false);
     const [ numGeminiCards, setNumGeminiCards ] = useState('undefined');
 
+    if (props.message) {
+        Alert.alert('Error', props.message);
+    }
+
     const [collectionTitle, setCollectionTitle] = 
         useState(props.collectionData ? props.collectionData.title : '');
     
@@ -59,17 +63,23 @@ export default function CollectionForm( props ) {
     const handleSubmit = () => {
       // Validate form
       if (!collectionTitle.trim()) {
-        Alert.alert('Error', 'Please enter a collection title');
+        Alert.alert('Error', messages.error.title);
         return;
       }
-  
+
       for (let i = 0; i < cards.length; i++) {
-        const card = cards[i];
-        if (!card.question.trim() || !card.answer.trim()) {
-          Alert.alert('Error', `Card ${i + 1} is missing question or answer`);
-          return;
+          const card = cards[i];
+          if (!card.question.trim() || !card.answer.trim()) {
+              Alert.alert('Error', messages.error.cardInfo(i+1));
+              return;
+            }
         }
+
+      if (cards.length < 2) {
+        Alert.alert('Error', messages.error.numCards);
+        return;
       }
+
   
       // Form data is valid, proceed with submission
       const formData = {

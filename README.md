@@ -24,6 +24,8 @@ when installing use `npx expo install <package>`
     "googleapis": "^105.0.0",
 
 
+### AI
+- Gemini
 
 
 ### App Uses:
