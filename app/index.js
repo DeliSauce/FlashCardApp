@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo } from "react";
-import { View, ScrollView, Text, SafeAreaView, StyleSheet, FlatList, Dimensions, Pressable} from "react-native";
+import React, { useEffect } from "react";
+import { View, Text, SafeAreaView, StyleSheet, Dimensions, Pressable} from "react-native";
 import { Image } from 'expo-image';
-import { Link, useRouter } from 'expo-router'; 
+import { useRouter } from 'expo-router'; 
 import CollectionItem from '@/components/CollectionItem';
 import {useCollectionsStore} from "@/store/collectionsStore";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -11,7 +11,7 @@ function CollectionsPage() {
     const collections = useCollectionsStore((state) => state.collections);
     const { fetchCollections } = useCollectionsStore();
     console.log('collections: ', collections)
-    const screenWidth = Dimensions.get('window').width;
+    // const screenWidth = Dimensions.get('window').width;
     const insets = useSafeAreaInsets();
     // const gap = 20;
     // const minItemWidth = 150;

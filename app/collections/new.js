@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import CollectionForm from '@/components/CollectionForm';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router } from 'expo-router';
 import { useCollectionsStore } from '@/store/collectionsStore';
 
 export default function NewCollectionScreen() {

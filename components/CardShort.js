@@ -1,10 +1,10 @@
 import React, {useState, useCallback, useEffect} from "react";
-import { Text, TextInput, ImageBackground, View, StyleSheet, Pressable, Dimensions } from "react-native";
+import { Text, TextInput, View, StyleSheet, Pressable, Dimensions } from "react-native";
 import { Image } from 'expo-image';
 import Markdown from 'react-native-markdown-display';
 
-import Tag from '@/components/Tag';
-import EditButton from '@/components/EditButton';
+// import Tag from '@/components/Tag';
+// import EditButton from '@/components/EditButton';
 
 import { GestureDetector } from 'react-native-gesture-handler';
 import { Gesture } from 'react-native-gesture-handler';
@@ -496,7 +496,6 @@ const styles = StyleSheet.create({
       padding: 10,
       display: 'flex',
       flexDirection: 'row',
-      padding: '10px'
     },
     buttonrow: {
       flexDirection: 'row',

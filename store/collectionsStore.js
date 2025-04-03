@@ -23,9 +23,9 @@ export const useCollectionsStore = create(
                 set({ loading: true, error: null });
                 try {
                     throw new Error('need to set up firestore');
-                    //const collections = await getCollections()
-                    set({ collections, loading: false });
-                    return collections;
+                    // const collections = await getCollections() // TODO integrate firebase
+                    // set({ collections, loading: false });
+                    // return collections;
                 } catch (error) {
                     console.log('process.env.EXPO_PUBLIC_USE_MOCK_DATA', process.env.EXPO_PUBLIC_USE_MOCK_DATA)
                     if (process.env.EXPO_PUBLIC_USE_MOCK_DATA === 'enabled' && get().collections.length === 0) {
@@ -61,7 +61,7 @@ export const useCollectionsStore = create(
                 // const { collections } = get();
                 const updatedCollection = validate({type: 'collection', data: {...updatedCollectionData, id: collectionId}});
                 const collections = get().collections
-                    .map((collection) => collection.id == collectionId ? updatedCollection : collection);
+                    .map((collection) => collection.id === collectionId ? updatedCollection : collection);
                 set({ collections, loading: false, error: null });
                 const id = updatedCollection.id;
                 console.log('*** updated a collection, id: ', id);
@@ -109,7 +109,7 @@ const validate = ({type, data}) => {
     const collectionId = data.id || `coll_${Math.random()}`;
     let newData = {};
 
-    if (type == 'collection') {
+    if (type === 'collection') {
         newData = {
             ...data, 
             id: collectionId,

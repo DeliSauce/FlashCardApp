@@ -1,5 +1,5 @@
 // import GEMINI_API_KEY from ".env"
-import { CARD_TOPICS } from '../constants/constants';
+import { CARD_TOPICS_AGGREGATED } from '../constants/constants';
 const GEMINI_API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -33,18 +33,18 @@ export const gemini = {
             "question": "the question that was asked",
             "answer": "your detailed answer to the question",
             "link": "a URL to a helpful resource related to this topic",
-            "topic": "one of: ${CARD_TOPICS.join(", ")} "
+            "topic": "one of: ${CARD_TOPICS_AGGREGATED.join(", ")} "
             }
             
             Ensure the JSON is properly formatted with no explanation text outside the JSON structure.
         `;
         const includeCode = `If the topic is related to programming, include code snippets if possible. `;
 
-        if (type == 'collection') {
+        if (type === 'collection') {
             query = `Create ${numCards} flashcards based on the following topic: ${prompt}`;
             query += includeCode + schemaFormatting;
         }
-        if (type == 'card') {
+        if (type === 'card') {
             query = `Answer the following question: "${prompt}"`;
             query+= includeCode + schemaFormatting;
         }
@@ -73,7 +73,7 @@ export const gemini = {
             // Parse and validate the returned JSON
             const parsedJSONResponse = JSON.parse(jsonString);
             console.log("GEMINI RESULTS JSON: ", parsedJSONResponse);
-            console.log('^^^^^^^^^gemini query end: ', Date.now(), '\nundefined?: ',  parsedJSONResponse == undefined);
+            console.log('^^^^^^^^^gemini query end: ', Date.now(), '\nundefined?: ',  parsedJSONResponse === undefined);
 
             return {
                 ...responseObjectSchema,
