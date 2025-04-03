@@ -4,21 +4,13 @@ import { Link, useRouter } from 'expo-router';
 // import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function Index() {
-  const router = useRouter();
   
   return (
         <View style={styles.container}>
           <Text style={styles.text}>Home screen</Text>
-          
+
           <Pressable style={styles.collections_button} onPress={() => router.push('/collections')}>
             <Text style={styles.link_text}>Go To Collections</Text>
-          </Pressable>
-
-          <Pressable
-            style={styles.create_button}
-            onPress={() => router.push('/create')}
-          >
-            <Image style={styles.button_image} source={require('@/assets/images/create-icon.png')}/>
           </Pressable>
 
         </View>

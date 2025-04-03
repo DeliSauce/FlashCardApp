@@ -94,11 +94,15 @@ export default function CollectionForm( props ) {
 
     const handleAIQuerySubmit = async () => {
       setIsLoading(true);
-      const data = await gemini.query({prompt: geminiQuery, type: 'collection', numCards: numGeminiCards});
+      const response = await gemini.query({prompt: geminiQuery, type: 'collection', numCards: numGeminiCards});
       setIsLoading(false);
-      setCollectionTitle(geminiQuery);
-      setCards(data.map( card => ({...blankCard, ...card})));
-      console.log('data: ', data)
+      if (response.error) {
+        console.log('response error', response.error);
+      } else {
+        setCollectionTitle(geminiQuery);
+        setCards(response.data.map( card => ({...blankCard, ...card})));
+        console.log('data: ', response.data)
+      }
     }
 
     const renderAIQuerySection = () => {
@@ -132,14 +136,24 @@ export default function CollectionForm( props ) {
             </View>
           : 
           <TouchableOpacity
-          style={styles.submitButton}
-          onPress={handleAIQuerySubmit}
-          ><Text style={styles.geminiButtonText}>Gemini</Text></TouchableOpacity>
-          
+            style={[styles.submitButton, styles.ai_button]}
+            onPress={handleAIQuerySubmit}
+          >
+            <Text style={styles.geminiButtonText}>Gemini</Text>
+          </TouchableOpacity>
           }
         </View>
       )
     }
+
+    const renderSubmitButton = (size) => (
+      <TouchableOpacity
+      style={[styles.submitButton, size=='small' && styles.submitButtonSmall]}
+      onPress={handleSubmit}
+      >
+        <Text style={styles.submitButtonText}>{`${props.collectionData ? 'Update' : 'Create'} Collection`}</Text>
+      </TouchableOpacity>
+    );
 
     return (
         <SafeAreaView style={styles.container}>
@@ -149,7 +163,8 @@ export default function CollectionForm( props ) {
             >
             <ScrollView style={styles.scrollView}>
                 <View style={styles.header}>
-                <Text style={styles.title}>Create Card Collection</Text>
+                  <Text style={styles.title}>Create Card Collection</Text>
+                  { renderSubmitButton('small') }
                 </View>
 
                 { renderAIQuerySection() }
@@ -246,12 +261,8 @@ export default function CollectionForm( props ) {
                 <Text style={styles.addButtonText}>+ Add Another Card</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                style={styles.submitButton}
-                onPress={handleSubmit}
-                >
-                <Text style={styles.submitButtonText}>{`${props.collectionData ? 'Update' : 'Create'} Collection`}</Text>
-                </TouchableOpacity>
+                { renderSubmitButton('large') }
+
             </ScrollView>
             </KeyboardAvoidingView>
         </SafeAreaView>
@@ -323,54 +334,60 @@ const styles = StyleSheet.create({
     elevation: 2,
     },
     cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 16,
     },
     cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: '#333',
     },
     removeButton: {
-    padding: 8,
+      padding: 8,
     },
     removeButtonText: {
-    color: '#e74c3c',
-    fontWeight: '600',
+      color: '#e74c3c',
+      fontWeight: '600',
     },
     addButton: {
-    padding: 16,
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderStyle: 'dashed',
-    marginBottom: 24,
+      padding: 16,
+      alignItems: 'center',
+      backgroundColor: '#f0f0f0',
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: '#ddd',
+      borderStyle: 'dashed',
+      marginBottom: 24,
     },
     addButtonText: {
-    color: '#3498db',
-    fontSize: 16,
-    fontWeight: '600',
+      color: '#3498db',
+      fontSize: 16,
+      fontWeight: '600',
     },
     submitButton: {
-    backgroundColor: '#3498db',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginBottom: 40,
+      backgroundColor: '#3498db',
+      padding: 16,
+      borderRadius: 8,
+      alignItems: 'center',
+      marginBottom: 40,
+    },
+    submitButtonSmall: {
+      width: 200,
     },
     submitButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
+      color: '#fff',
+      fontSize: 18,
+      fontWeight: '600',
+    },
+    ai_button: {
+      backgroundColor: 'red',
     },
     geminiButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
+      color: '#fff',
+      fontSize: 18,
+      fontWeight: '600',
     },
 });
     

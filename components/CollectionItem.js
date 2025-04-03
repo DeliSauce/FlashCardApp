@@ -3,8 +3,10 @@ import {View, StyleSheet, Text, TouchableOpacity, Pressable} from 'react-native'
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useCollectionsStore } from '@/store/collectionsStore';
+// import { IconBrandJavascript } from '@tabler/icons-react'
+import tablerIconUrls from '@/assets/images/_tabler-icons';
 
-function CollectionButton(props) {
+function CollectionItem(props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { deleteCollection } = useCollectionsStore();
 
@@ -58,8 +60,23 @@ function CollectionButton(props) {
             style={[styles.container, styles.buttonStyling]} 
             onPress={handlePress}
             onLongPress={handleLongPress}
-            >
-            <Text style={styles.text}>{props.collection.title}</Text>
+        >
+            <View style={styles.top_section}>
+                <View style={styles.card_count_box}>
+                    <Text style={styles.card_count_num}>
+                        {props.collection.cards.length}
+                    </Text>
+                </View>
+            </View>
+
+            <View style={styles.center_section}>
+                <Text style={styles.text}>{props.collection.title}</Text>
+            </View>
+
+            <View style={styles.bottom_section}>
+                <Image style={styles.tag_image} source={tablerIconUrls['TypeScript']}></Image>
+            </View>
+
             { isModalOpen && LongPressMenu } 
         </Pressable>
     )
@@ -69,26 +86,61 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
-        borderRadius: '5px',
+        justifyContent: 'space-between',
+        borderRadius: 5,
         backgroundColor: 'lightblue',
         boxShadow: '1',
-        padding: '10px',
+        padding: 10,
         width: 150,
         height: 150,
     },
     buttonStyling: {
         boxShadow: 
         '0 3px 5px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
-      
-      /* Subtle gradient */
-      backgroundImage: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.08))',
-      
-      /* Smooth transition but keeping it minimal for performance */
-      transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+        
+        /* Subtle gradient */
+        backgroundImage: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.08))',
+        
+        /* Smooth transition but keeping it minimal for performance */
+        transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+    },
+    top_section: {
+        height: 25,
+        display: 'flex',
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'flex-end',
+        alignItems: "flex-start",
+    },
+    card_count_box: {
+        border: '1px solid rgb(235, 113, 52)',
+        borderRadius: 3,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 20,
+        width: 20,
+        backgroundColor: 'rgb(235, 113, 5)',
+    },
+    card_count_num: {
+        fontSize: 12,
+        color: 'white',
+    },
+    center_section: {
+        flex: 1,
+        justifyContent: 'center',
     },
     text: {
         textAlign: 'center',
+    },
+    bottom_section: {
+        height: 25,
+    },
+    tag_image: {
+        height: 25,
+        width: 25,
+        fill: 'white',
+        tintColor: 'blue',
+        // backgroundColor: 'red',
     },
     longPressMenu: {
         position: 'absolute',
@@ -105,21 +157,21 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         paddingTop: '100px',
-      },
-      menu_section: {
+    },
+    menu_section: {
         display: 'flex',
         flexDirection: 'column'
-      },
-      menu_image: {
+    },
+    menu_image: {
         width: 20,
         height: 20,
-      },
-      menu_text: {
+    },
+    menu_text: {
         color: 'white',
         fontSize: 10,
-      },
+    },
     keyboardAvoidContainer: {
         flex: 1,
     },
 })
-export default CollectionButton;
+export default CollectionItem;

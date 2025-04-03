@@ -2,8 +2,7 @@ when installing use `npx expo install <package>`
 [https://docs.expo.dev/workflow/using-libraries/]
 
 ### To deploy to localhost:
-- nvm use 20
-- nvm expo start
+- nvm use 20 && npx expo start --web
 - w (to lauch web on localhost)
 
 ##### other useful CLI commands
@@ -33,6 +32,8 @@ when installing use `npx expo install <package>`
 - react-native-reanimated for gesture handling
 - 
 
+### Markdown Component Styling
+- https://github.com/iamacup/react-native-markdown-display
 
 ### Resources for Animations
 - https://docs.swmansion.com/react-native-reanimated/docs/utilities/interpolate/

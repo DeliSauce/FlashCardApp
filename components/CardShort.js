@@ -378,9 +378,9 @@ const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => 
 
                         <View style={styles.cardInner}>
                             <Markdown style={{
-                                body: {color: 'black', fontSize: 10},
+                                body: {color: 'black', fontSize: 15},
                                 heading1: {color: 'purple'},
-                                code_block: {color: 'blue', fontSize: 10},
+                                code_block: {color: 'red', fontSize: 10, backgroundColor: 'red'},
                                 code_inline: {color: 'green', fontSize: 10, padding: 2}
                             }}>{cardData.answer}</Markdown>
                         </View>
@@ -424,8 +424,7 @@ const styles = StyleSheet.create({
       backgroundColor: "lightblue",
     },
     cardBack: {
-      backgroundColor: "lightgrey",
-    //   transform: [{rotateY: '45deg'}],
+      backgroundColor: "rgb(235, 198, 52)",
     },
     isnext: {
         // shadowColor: "#000",

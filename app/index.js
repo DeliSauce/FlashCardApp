@@ -2,8 +2,9 @@ import React, { useEffect, useMemo } from "react";
 import { View, ScrollView, Text, SafeAreaView, StyleSheet, FlatList, Dimensions, Pressable} from "react-native";
 import { Image } from 'expo-image';
 import { Link, useRouter } from 'expo-router'; 
-import CollectionButton from '@/components/CollectionButton';
+import CollectionItem from '@/components/CollectionItem';
 import {useCollectionsStore} from "@/store/collectionsStore";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 function CollectionsPage() {
     const router = useRouter();
@@ -11,12 +12,13 @@ function CollectionsPage() {
     const { fetchCollections } = useCollectionsStore();
     console.log('collections: ', collections)
     const screenWidth = Dimensions.get('window').width;
+    const insets = useSafeAreaInsets();
     // const gap = 20;
     // const minItemWidth = 150;
     // const numColumns = Math.floor((screenWidth + gap) / (minItemWidth + gap));
     // const numColumns = useMemo(() => Math.floor((screenWidth + gap) / (minItemWidth + gap)), []);
 
-    const createCollectionButton = (
+    const createCollectionItem = (
         <View style={styles.button_wrapper}>
             <Pressable
                 style={styles.create_button}
@@ -32,28 +34,17 @@ function CollectionsPage() {
     }, [])
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, {paddingTop: insets.top}]}>
             <Text style={styles.title}> Your Flashcard Collections </Text>
-            {/* <FlatList 
-                numColumns={numColumns} 
-                style={styles.collection_list}
-                data={collections}
-                renderItem={({item}) => <CollectionButton collection={item}/>}
-                key={numColumns}
-                keyExtractor={item => item.id}
-                contentContainerStyle={styles.flatlist}
-                columnWrapperStyle={styles.row}
-            >
-            </FlatList> */}
             <View style={styles.collection_list}>
                 {collections.map((collection) => (
-                    <CollectionButton 
+                    <CollectionItem 
                         collection={collection} 
                         key={collection.id}/>
                     )
                 )}
 
-                { createCollectionButton }
+                { createCollectionItem }
             </View>
 
         </SafeAreaView>
@@ -72,9 +63,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         margin: 20,
     },
-    flatlist: {
-        padding: 10,
-    },
     button_wrapper: {
         width: 150,
         height: 150,
@@ -86,10 +74,6 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
     },
-    // row: {
-    //     justifyContent: 'space-between',
-    //     marginBottom: 20, // Equivalent to gridGap    
-    // },
     collection_list: {
         display: 'flex',
         flexDirection: 'row',
@@ -98,18 +82,6 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         paddingRight: 20,
         rowGap: 20,
-        // display: 'grid',
-        // gridTemplateColumns: 'repeat(auto-fill, minmax(50px, 1fr))',
-        // gridGap: '20px',
-        // padding: '0 20px',
-        // width: '100%',
-        // height: '100%',
-        // gap: '20px',
-        // flexWrap: 'wrap',
-        // display: 'flex',
-        // flexDirection: 'row',
-        // alignItems: 'flex-start',
-        // justifyContent: 'space-around',
     },
     keyboardAvoidContainer: {
         flex: 1,

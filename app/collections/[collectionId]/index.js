@@ -2,9 +2,9 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {useCollectionsStore, useCollectionParam} from '@/store/collectionsStore';
 import { useLocalSearchParams } from 'expo-router';
-import CardStack from '@/components/CardStack'
+// import CardStack from '@/components/CardStack'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import CardStackClaude from '@/components/CardStackClaude';
+// import CardStackClaude from '@/components/CardStackClaude';
 import CardStackShort from '@/components/CardStackShort';
 
 export default function Collection(props) {
