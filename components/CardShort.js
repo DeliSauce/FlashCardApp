@@ -18,12 +18,12 @@ import {
   runOnJS,
   interpolate,
 } from 'react-native-reanimated';
-import {useCollectionsStore} from '@/store/collectionsStore';
+import {useStore} from '@/store/store';
 
 
 
 const CardShort = ({ cardData, isCurrent, setNextCard, onPositionChange = () => {}, position }) => {
-    const {updateCardInCollection} = useCollectionsStore();
+    const {updateCardInCollection} = useStore();
     const tags = cardData.topics || [];
     const possibleOrientations = ['A', 'B', 'both'];
     const [swipeStatus, setSwipeStatus] = useState('normal');

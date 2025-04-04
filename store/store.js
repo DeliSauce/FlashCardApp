@@ -2,8 +2,9 @@ import {create} from 'zustand';
 import {persist} from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {store} from '@/tests/mock-store';
+import * as FIRESTORE from '@/services/firestore';
 
-export const useCollectionsStore = create(
+export const useStore = create(
     // (set) => ({
     //     bears: 0,
     //     increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
@@ -15,17 +16,36 @@ export const useCollectionsStore = create(
 
     persist(
         (set, get) => ({
+            user: null,
             collections: [],
             loading: false,
             error: null,
 
+
+            setUser: async (userData) => {
+
+                set({ user: userData, loading: false, error: null });
+
+            },
+
+            // fetchUser: async () => {
+            //     set({ loading: true, error: null });
+
+            //     try {
+                    
+            //     } catch (error) {
+                    
+            //     }
+            // },
+
             fetchCollections: async () => {
                 set({ loading: true, error: null });
+
                 try {
-                    throw new Error('need to set up firestore');
-                    // const collections = await getCollections() // TODO integrate firebase
-                    // set({ collections, loading: false });
-                    // return collections;
+                    const userID = get().user.uid;
+                    const collections = await FIRESTORE.getUserCollections(userID);
+                    set({ collections, loading: false });
+                    return collections;
                 } catch (error) {
                     console.log('process.env.EXPO_PUBLIC_USE_MOCK_DATA', process.env.EXPO_PUBLIC_USE_MOCK_DATA)
                     if (process.env.EXPO_PUBLIC_USE_MOCK_DATA === 'enabled' && get().collections.length === 0) {
@@ -37,42 +57,61 @@ export const useCollectionsStore = create(
                 }
             },
 
-            // TODO this is a mess, need to redo (try/catch, firebase db, mutability)
+            getCollectionValueFromParam: (collectionParam, collectionID) => {
+                const collection = get().collections.find((collection) => collection.id === collectionID);
+                const collectionValue = collection ? collection[collectionParam] : undefined;
+
+                // TODO check for valid param
+                // const collectionValue = useStore((state) => state.collections
+                //     .find((collection) => collection.id === collectionID))[collectionParam];
+                return collectionValue;
+            },
+
             addCollection: async (newCollectionData) => {
                 set({ loading: true, error: null });
                 const newCollection = validate({type: 'collection', data: newCollectionData});
-                const collections = [...get().collections, newCollection];
-                set({collections, loading: false, error: null});
-                const id = newCollection.id
-                console.log('*** create a new collection, id: ', id)
-                return id;
+                console.log('validated new collection', newCollection)
+
+                try {
+                    const userID = get().user.uid;
+                    const collectionID = await FIRESTORE.createCollection(userID, newCollection);
+                    const collections = await FIRESTORE.getUserCollections(userID);
+                    set({ collections, loading: false });
+                    return collectionID;                    
+                } catch (error) {
+                    const collections = [...get().collections, newCollection];
+                    set({collections, loading: false, error: null});
+                    const collectionID = newCollection.id;
+                    console.log('*** create a new collection, id: ', collectionID);
+                    return collectionID;
+                }
             },
 
-            deleteCollection: async (collectionId) => {
+            deleteCollection: async (collectionID) => {
                 set({ loading: true, error: null });
                 const collections = get().collections
-                    .filter( (collection) => collection.id !== collectionId);
+                    .filter( (collection) => collection.id !== collectionID);
                 set({ collections, loading: false, error: null });
             },
 
-            updateCollection: async (collectionId, updatedCollectionData) => {
+            updateCollection: async (collectionID, updatedCollectionData) => {
                 console.log('updateCollection, ', updatedCollectionData)
                 set({ loading: true, error: null });
                 // const { collections } = get();
-                const updatedCollection = validate({type: 'collection', data: {...updatedCollectionData, id: collectionId}});
+                const updatedCollection = validate({type: 'collection', data: {...updatedCollectionData, id: collectionID}});
                 const collections = get().collections
-                    .map((collection) => collection.id === collectionId ? updatedCollection : collection);
+                    .map((collection) => collection.id === collectionID ? updatedCollection : collection);
                 set({ collections, loading: false, error: null });
                 const id = updatedCollection.id;
                 console.log('*** updated a collection, id: ', id);
                 return id;
             },
 
-            updateCardInCollection: async (collectionId, cardId, data) => {
+            updateCardInCollection: async (collectionID, cardId, data) => {
                 set({ loading: true, error: null })
                 const collections = store.collections;
                 const newCollections = collections.map(( collection ) => {
-                    if (collection.id === collectionId) {
+                    if (collection.id === collectionID) {
                         return {
                             ...collection, 
                             cards: collection.cards.map(( card ) => {
@@ -106,13 +145,11 @@ export const useCollectionsStore = create(
 // TODO add actual validation of the fields in data
 const validate = ({type, data}) => {
     const timestamp = new Date().toISOString();
-    const collectionId = data.id || `coll_${Math.random()}`;
     let newData = {};
 
     if (type === 'collection') {
         newData = {
             ...data, 
-            id: collectionId,
             createdAt: timestamp,
             updatedAt: timestamp,
             cards: data.cards.map(( card, idx ) => {
@@ -130,17 +167,17 @@ const validate = ({type, data}) => {
     return newData;
 }
 
-export const useCollectionParam = (collectionId, collectionParam) => {
-    // TODO check for valid param
-    const collectionValue = useCollectionsStore((state) => state.collections
-        .find((collection) => collection.id === collectionId))[collectionParam];
-    return collectionValue;
-}
+// export const useCollectionParam = (collectionID, collectionParam) => {
+//     // TODO check for valid param
+//     const collectionValue = useStore((state) => state.collections
+//         .find((collection) => collection.id === collectionID))[collectionParam];
+//     return collectionValue;
+// }
 
-export const getCollectionFromId = (collectionId) => {
-    const collection = useCollectionsStore((state) => state.collections
-        .find((collection) => collection.id === collectionId));
+export const getCollectionFromID = (collectionID) => {
+    const collection = useStore((state) => state.collections
+        .find((collection) => collection.id === collectionID));
     return collection;
 }
 
-// export default useCollectionsStore;
+// export default useStore;

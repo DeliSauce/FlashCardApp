@@ -16,7 +16,6 @@ import {
 } from 'react-native';
 import { gemini } from "@/services/ai";
 import { Picker } from '@react-native-picker/picker';
-import { useCollectionsStore } from '@/store/collectionsStore';
 import { useRouter } from 'expo-router';
 
 export default function CollectionForm( props ) {

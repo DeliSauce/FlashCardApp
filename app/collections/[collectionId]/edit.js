@@ -1,18 +1,18 @@
 import React, { useCallback } from 'react';
 import CollectionForm from '@/components/CollectionForm';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useCollectionsStore, getCollectionFromId } from '@/store/collectionsStore';
+import { useStore, getCollectionFromID } from '@/store/store';
 
 export default function EditCollectionScreen() {
-    const { collectionId, error } = useLocalSearchParams();
-    const { updateCollection } = useCollectionsStore();
-    const collection = getCollectionFromId(collectionId);
+    const { collectionID, error } = useLocalSearchParams();
+    const { updateCollection } = useStore();
+    const collection = getCollectionFromID(collectionID);
 
     const handleUpdatedCollection = useCallback(async (collectionFormData) => {
-        await updateCollection( collectionId, collectionFormData );
+        await updateCollection( collectionID, collectionFormData );
         console.log('about to router.push')
-        router.push(`/collections/${collectionId}`);
-    }, [collectionId]);
+        router.push(`/collections/${collectionID}`);
+    }, [collectionID]);
 
     return (
         <CollectionForm

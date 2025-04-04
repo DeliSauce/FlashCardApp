@@ -41,3 +41,6 @@ token.json
 *.tsbuildinfo
 
 app-example
+
+/android
+/ios

@@ -9,18 +9,34 @@ when installing use `npx expo install <package>`
 - npx expo-doctor
 
 
+
+firebase FireStore for db
+cloud functions for Gemini API calls
+Google for oauth
+
+### Expo Development
+- can run on android using Expo Go
+- Development Build: run either in an emulator or use EAS to run the dev build on device (https://www.youtube.com/watch?v=FdjczjkwQKE&t=597s)
+
+
 ### To do list
 - need to figure out how to hide Google credentials from users and how to deploy them (look into Expo EAS, expo-secure-store)
+-- https://reactnative.dev/docs/security#storing-sensitive-info
+-- https://docs.expo.dev/versions/latest/sdk/securestore/
 - swipe tracking: track left vs right swipes, record data (should probably be maintained at the 'user' level instead of the 'card'/'collection' level if we want collection sharing in the future), and dynamically set card display order based on optimal frequency (i.e. show known info less often)
 - figure out best RN component for buttons (pressable, touchableopacity, button, etc)
 - make sure that UI is reachable at bottom of screen
-- 
+- API services
+-- figure out if API methods should return an object with info, data, or boolean
+-- 
 
 
-- install firebase
-    "@google-cloud/local-auth": "^2.1.0",
-    "firebase": "^10.12.5",
-    "googleapis": "^105.0.0",
+### Learnings
+- when a component that is part of a mapped group of components is not interacting properly, make sure that the key param is set properly (eg. will not work if all components have the same key)
+
+
+TO DO!!!!!!
+- need to figure out when to save user data to /users
 
 
 ### AI

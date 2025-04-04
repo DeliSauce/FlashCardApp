@@ -2,19 +2,20 @@ import React, {useState, useEffect} from "react";
 import {View, StyleSheet, Text, TouchableOpacity, Pressable} from 'react-native';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { useCollectionsStore } from '@/store/collectionsStore';
+import { useStore } from '@/store/store';
 // import { IconBrandJavascript } from '@tabler/icons-react'
 import tablerIconUrls from '@/assets/images/_tabler-icons';
 
 function CollectionItem(props) {
+    const {collections} = useStore();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { deleteCollection } = useCollectionsStore();
+    const { deleteCollection } = useStore();
 
     const router = useRouter();
-
-    console.log('collection item: ', props)
     
     function handlePress() {
+        // console.log(props.collection.id);
+        // console.log(collections)
         router.push('/collections/' + props.collection.id)
     }
 
@@ -24,8 +25,8 @@ function CollectionItem(props) {
     }
 
     function handleEditButtonPress() {
-        setIsModalOpen(false);
-        router.push(`/collections/${props.collection.id}/edit`);
+        // setIsModalOpen(false);
+        // router.push(`/collections/${props.collection.id}/edit`);
     }
 
     const LongPressMenu = (

@@ -1,16 +1,21 @@
 import React, {useState, useEffect, useCallback, useMemo} from 'react';
 import { View, StyleSheet } from 'react-native';
 import CardShort from '@/components/CardShort';
-import {useCollectionsStore} from '@/store/collectionsStore';
+import {useStore} from '@/store/store';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
 import messages from '@/constants/messages';
+import {store} from '@/tests/mock-store'
 
-const CardStackShort = ({ collectionId }) => {
-    const cards = useCollectionsStore((state) => state.collections.find((collection) => collectionId === collection.id).cards)
+const CardStackShort = ({ collectionID }) => {
+    // console.log('cardstackshort, collectionID: ', collectionID)
+    const cards = useStore(state => state.getCollectionValueFromParam('cards', collectionID));
+    // const cards = store.collections[0].cards;
+    // console.log('cardstackshort, cards: ', cards)
+    // const cards = useStore((state) => state.collections.find((collection) => collectionID === collection.id).cards)
     const [currentIdx, setCurrentIdx] = useState(0); 
     const [activeCardPosition, setActiveCardPosition] = useState(0);
-    const onlyOneCardInDeck = cards.length === 1; //TODO handle case where only one card in deck (alert that user needs to add a card before viewing deck)
+    const notEnoughCards = !cards || cards.length === 1; //TODO handle case where only one card in deck (alert that user needs to add a card before viewing deck)
     
     // useCallback since this is being passed into child component. Don't want child to rerender whenever parent does. 
     // (setNextCard would be recreated on rerender and therefore prop would change)
@@ -29,15 +34,16 @@ const CardStackShort = ({ collectionId }) => {
     }
 
     const currentCard = cards[currentIdx];
-    const nextCard = cards[currentIdx == cards.length - 1 ? 0 : currentIdx + 1];
+    const nextCard = cards[currentIdx === cards.length - 1 ? 0 : currentIdx + 1];
 
     useEffect(() => {
-        if (onlyOneCardInDeck) {
-            router.push({pathname: `/collections/${collectionId}/edit`, params: {error: messages.error.numCards}});
+        console.log('cards changed', cards)
+        if (notEnoughCards) {
+            router.push({pathname: `/collections/${collectionID}/edit`, params: {error: messages.error.numCards}});
         }
     }, [cards])
 
-    if (onlyOneCardInDeck) {
+    if (notEnoughCards) {
         return <View></View>;
     }
     return (

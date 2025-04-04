@@ -1,15 +1,20 @@
-import React, { useEffect } from "react";
-import { View, Text, SafeAreaView, StyleSheet, Dimensions, Pressable} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, SafeAreaView, StyleSheet, Pressable } from "react-native";
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router'; 
 import CollectionItem from '@/components/CollectionItem';
-import {useCollectionsStore} from "@/store/collectionsStore";
+import {useStore} from "@/store/store";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import GoogleAuth from "../components/GoogleAuth";
+import TestFireStore from "../components/TestFireStore";
 
 function CollectionsPage() {
+    const TESTING_FIRESTORE = false;
     const router = useRouter();
-    const collections = useCollectionsStore((state) => state.collections);
-    const { fetchCollections } = useCollectionsStore();
+    // const user = useStore(state => state.user);
+    const [user, setUser] = useState(null)
+    const collections = useStore((state) => state.collections);
+    const { fetchCollections } = useStore();
     console.log('collections: ', collections)
     // const screenWidth = Dimensions.get('window').width;
     const insets = useSafeAreaInsets();
@@ -32,6 +37,26 @@ function CollectionsPage() {
     useEffect(() => {
         fetchCollections();
     }, [])
+
+    // TODO: moved user to Store so may not need this callback
+    const handleUserAuthStateChange = (firebaseUser) => {
+        setUser(firebaseUser);
+      };
+    
+      console.log('user', user, !user)
+    if (!user) {
+        return (
+            <View>
+                <GoogleAuth onAuthStateChanged={handleUserAuthStateChange}/>
+            </View>
+        )
+    }
+
+    if (TESTING_FIRESTORE) {
+        return (
+            <TestFireStore></TestFireStore>
+        )
+    }
 
     return (
         <SafeAreaView style={[styles.container, {paddingTop: insets.top}]}>
