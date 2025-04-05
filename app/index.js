@@ -11,17 +11,11 @@ import TestFireStore from "../components/TestFireStore";
 function CollectionsPage() {
     const TESTING_FIRESTORE = false;
     const router = useRouter();
-    // const user = useStore(state => state.user);
     const [user, setUser] = useState(null)
     const collections = useStore((state) => state.collections);
     const { fetchCollections } = useStore();
     console.log('collections: ', collections)
-    // const screenWidth = Dimensions.get('window').width;
     const insets = useSafeAreaInsets();
-    // const gap = 20;
-    // const minItemWidth = 150;
-    // const numColumns = Math.floor((screenWidth + gap) / (minItemWidth + gap));
-    // const numColumns = useMemo(() => Math.floor((screenWidth + gap) / (minItemWidth + gap)), []);
 
     const createCollectionItem = (
         <View style={styles.button_wrapper}>

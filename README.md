@@ -5,6 +5,9 @@ when installing use `npx expo install <package>`
 - nvm use 20 && npx expo start --web
 - w (to lauch web on localhost)
 
+### EAS development build
+- eas build --profile development --platform [ios|android|all]
+
 ##### other useful CLI commands
 - npx expo-doctor
 
